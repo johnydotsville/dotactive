@@ -1,0 +1,24 @@
+.win {
+  border-left: 10px solid #5BE500;
+}
+
+.lose {
+  border-left: 10px solid #FF2828;
+}
+
+.portrait {
+  /* width: 5%;
+  height: auto; */
+}
+
+.brief {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: auto auto auto;
+  font-size: 12px;
+}
+
+.playerStatus {
+  display: flex;
+  background-color: blanchedalmond;
+}

@@ -1,0 +1,26 @@
+.teamInfoBody {
+  display: flex;
+}
+
+.score {
+  padding: 5px;
+  min-width: 20px;
+}
+
+.scoreWin {
+  background-color: #5BE500;
+}
+
+.scoreLose {
+  background-color: #FF2828;
+}
+
+.heropic {
+  width: 80px;
+  height: auto;
+  display: block;
+}
+
+.heroLine {
+  display: flex;
+}
