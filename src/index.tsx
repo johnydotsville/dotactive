@@ -29,6 +29,20 @@ import { MatchService } from '@domain/services/matches/match-service';
 // }
 // prepare();
 
+async function prepare() {
+  const database = new Database(idbConfig);
+  await database.init();
+
+  const accountId = 56831765;
+
+  const ms = new MatchService(database);
+  await ms.init(accountId);
+  const matches = ms.getAllMatches();
+  console.log(matches);
+}
+
+prepare();
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

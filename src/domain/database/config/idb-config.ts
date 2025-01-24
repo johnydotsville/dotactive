@@ -1,5 +1,5 @@
 export const idbConfig = {
-  version: 2,
+  version: 1,
   dbname: 'dotastats',
   storages: [
     {

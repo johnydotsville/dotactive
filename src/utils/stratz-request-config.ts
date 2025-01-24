@@ -5,6 +5,7 @@ export const stratzRequestConfig = {
   method: "post",
   headers: {
     "content-type": "application/json",
-    "Authorization": `Bearer ${token}`
+    "Authorization": `Bearer ${token}`,
+    "User-Agent": "STRATZ_API"
   }
 };
