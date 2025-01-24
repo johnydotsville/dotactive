@@ -1,6 +1,8 @@
 import { stratzRequestConfig } from '@utils/stratz-request-config';
 import axios, {isCancel, AxiosError} from 'axios';
 import { Match } from './model/match';
+import { MatchQueryBuilder} from './match-query-builder';
+import { AxiosGraphqlQueryAdapter } from '@utils/axios-graphql-query-adapter';
 
 export class MatchService {
   private database;
@@ -25,8 +27,11 @@ export class MatchService {
   }
 
   private async loadMatchesForPlayer(playerAccountId: number) {
-    const query = this.getMatchInfoQuery(playerAccountId);
-    this.requestConfig.data = query;
+    const builder = new MatchQueryBuilder();
+    builder.account(playerAccountId).take(50);
+    const matchQuery = AxiosGraphqlQueryAdapter.toAxiosQuery(builder.build(), "getMatchInfo");
+
+    this.requestConfig.data = matchQuery;
     const response = await axios.request(this.requestConfig);
 
     return response.data.data.player.matches.map(m => Match.create(m));
@@ -39,75 +44,4 @@ export class MatchService {
   public getAllMatches(): Match[] {
     return this.matches;
   }
-
-  private getMatchInfoQuery(playerAccountId: number) {
-    // TODO: фильтры по типу лобби и т.д. можно добавить, сколько выбрать матчей и т.д.
-    return {
-      operationName: "getMatchInfo",
-      query: `query getMatchInfo
-        {
-          player(steamAccountId: ${playerAccountId}) {
-            steamAccountId,
-            matches(request: {
-              take: 20
-            }) {
-              id
-              startDateTime
-              durationSeconds
-              lobbyType
-              didRadiantWin
-              gameMode
-              bracket
-              players {
-                steamAccount {
-                  id
-                  timeCreated
-                  dotaAccountLevel
-                  isAnonymous
-                  seasonRank
-                  smurfFlag
-                }
-                hero {
-                  id
-                  displayName
-                  shortName
-                }
-                isRadiant
-                isVictory
-                kills
-                deaths
-                assists
-                goldPerMinute
-                experiencePerMinute
-                networth
-                level
-                heroDamage
-                towerDamage
-                position
-                lane
-                intentionalFeeding
-              }
-            }
-          }
-        }`,
-      variables: {}
-    }
-  }
-
 }
-
-/*
-{
-  player(steamAccountId: 1191745794) {
-    steamAccountId,
-    matches(request: {
-    	matchIds: []
-      lobbyTypeIds: [7]
-      skip: 1
-    }) {
-      id
-    }
-  }
-}
-
-*/

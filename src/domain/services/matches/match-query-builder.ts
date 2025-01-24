@@ -1,10 +1,14 @@
+/**
+ * Построитель запроса выборки матчей игрока. Содержит методы установки
+ * параметров для шаблона запроса и метод генерации строки запроса.
+ */
 export class MatchQueryBuilder {
   private query: string;
   private requestParams: any;
   private singleParams: any;
 
   constructor() {
-    this.query = queryTemplate;
+    this.query = queryTemplate;  // TODO: Так нормально делать? Или все же лучше отдельно в клиенте импортировать шаблон и передавать его через конструктор?
     this.requestParams = [];
     this.singleParams = [];
   }
@@ -60,6 +64,11 @@ export class MatchQueryBuilder {
   }
 }
 
+/**
+ * Шаблон для запроса выбора матчей игрока. Содержит набор полей,
+ * которые надо выбрать, а также параметры, которые надо заменить
+ * на конкретные значения.
+ */
 const queryTemplate = `
   {
     player(steamAccountId: #playerAccountId#) {
