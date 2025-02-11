@@ -3,25 +3,32 @@
  * с настройками для хранилищ.
  */
 export const idbConfig = {
+  // TODO: написать тип для этого конфига.
+  // TODO: описание хранилища можно сделать отдельным классом тоже.
   version: 1,
-  dbname: 'dotastats',
+  dbname: 'dotactive',
   storages: [
     {
       name: "matches",
-      settings: {
+      options: {
         keyPath: "id"
       },
       indexes: [
         {
-          name: "lobby_type",
+          name: "lobby_type_index",
           keyPath: "lobbyType",
+          options: { }
+        },
+        {
+          name: "start_date_index",
+          keyPath: "startDateTime",
           options: { }
         }
       ]
     },
     {
       name: "constants",
-      settings: { },
+      options: { },
       indexes: []
     }
   ]

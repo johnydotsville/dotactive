@@ -1,5 +1,6 @@
 import { stratzRequestConfig } from '@utils/stratz-request-config';
-import axios, {isCancel, AxiosError} from 'axios';
+import axios, {isCancel, AxiosError} from '../../../../node_modules/axios';
+// import axios, {isCancel, AxiosError} from 'axios';
 import { Match } from './model/match';
 import { MatchQueryBuilder} from './match-query-builder';
 import { AxiosGraphqlQueryAdapter } from '@utils/axios-graphql-query-adapter';
@@ -38,10 +39,17 @@ export class MatchService {
   }
 
   private async saveMatches(matches: Match[]): Promise<Match[]> {
-    return await this.database.saveMany(this.storage, matches);
+    // return await this.database.saveMany(this.storage, matches);
+    const result = await this.database.save(this.storage, matches);
+    return result;
   }
 
   public getAllMatches(): Match[] {
     return this.matches;
+  }
+
+  public async getMatch(id) {
+    const result = await this.database.read(this.storage, id);
+    return result;
   }
 }

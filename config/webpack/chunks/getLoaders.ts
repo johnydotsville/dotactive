@@ -36,8 +36,14 @@ export function getLoaders(): ModuleOptions {
       }
     ],
   };
+  // const babelLoader = {  // Это подписал, т.к. у Jest было
+  //   test: /\.jsx?$/,
+  //   exclude: ['node_modules'],
+  //   use: ['babel-loader']
+  // };
 
   return {
     rules: [tsLoader, cssLoader, imgLoader, svgLoader],
+    // rules: [tsLoader, cssLoader, imgLoader, svgLoader, babelLoader],
   }
 }

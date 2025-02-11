@@ -11,7 +11,7 @@ export const App = () => {
 
   return (
     <div>
-      Привет, мир!
+      Hello, world!
       {/* <Matches /> */}
     </div>
   )

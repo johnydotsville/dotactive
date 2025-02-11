@@ -1,3 +1,23 @@
+/*
+  Актуальные вопросы:
+  * Сохранение.
+    * Сохранение одной записи и многих записей сделать разными методами или объединить в одном?
+    * Как реализовать сохранение многих записей -
+      * Сохранять каждую отдельно в своей транзакции?
+      * Или сохранить все разом в одной транзакции?
+    * В случае сохранения многих записей, если происходит ошибка, то
+      * Откатывать все записи?
+      * Или сохраненные успешно оставить, а провальные вернуть каким-нибудь списком?
+*/
+
+/*
+  {
+    succeeded: true | false,
+    message: "",
+    data: any
+  }
+*/
+
 
 export class Database {
   config: any;
@@ -8,87 +28,131 @@ export class Database {
     this.config = config;
   }
 
-  init() {
+  init() {  // Можно ли типизировать, чтобы промис возвращал объект? Если норм, то условно success: true, message: пусто, а если не норм, то success: false и текст ошибки в message
     return new Promise((resolve, reject) => {
+      if (this.database) {
+        console.log("База данных уже открыта.");
+        resolve(true);
+        return;
+      };
+      console.log("База данных не обнаружена. Создаю базу данных...");
       const openRequest = indexedDB.open(this.config.dbname, this.config.version);
 
       openRequest.onupgradeneeded = () => {
         const database = openRequest.result;
         this.createStorages(database, this.config.storages);
-      }
+      };
 
       openRequest.onsuccess = () => {
         this.database = openRequest.result;
-        resolve(true);
-      }
+        resolve({ succeeded: true, message: "" });
+      };
+
+      openRequest.onerror = () => {
+        reject({ succeeded: false, message: openRequest.error });
+      };
     })
   }
 
   private createStorages(database, storages) {
     storages.forEach(s => {
       if (!database.objectStoreNames.contains(s.name)) {
-        const storage = database.createObjectStore(s.name, s.settings);
-        s.indexes.forEach(x => storage.createIndex(x.name, x.keyPath, x.options));
+        const storage = database.createObjectStore(s.name, s.options);
+        this.createIndexes(storage, s.indexes);
       }
     });
   }
 
-  // TODO: Что если попробовать сохранить, а такой ключ уже есть?
-  save(storage: string, data, key = null) {
-    return new Promise((resolve, reject) => {
-      const tx = this.database.transaction(storage, "readwrite");
-      const st = tx.objectStore(storage);
-      let addRequest;
-      if (key) {
-        addRequest = st.add(data, key);
+  private createIndexes(storage, indexes) {
+    indexes.forEach(x => storage.createIndex(x.name, x.keyPath, x.options));
+  }
+  
+  /**
+   * Метод сохраняет данные в указанное хранилище. Всегда возвращает успешный промис
+   * с массивом отчетов о сохранении. Может сохранять как одиночный объект, так и массив объектов.
+   * Все объекты сохраняются в пределах одной транзакции.
+   * @param storageName 
+   * @param data 
+   * @returns 
+   */
+  save(storageName: string, data) {
+    return new Promise(resolve => {
+      const tx = this.database.transaction(storageName, "readwrite");
+      const storage = tx.objectStore(storageName);
+      const saveReport = [];
+
+      if (Array.isArray(data)) {
+        data.forEach(x => this.trySave(storage, x, saveReport));
       } else {
-        addRequest = st.add(data);
+        this.trySave(storage, data, saveReport);
       }
-      
-      addRequest.onsuccess = () => {
-        resolve(data);
+
+      tx.onerror = (event) => {
+        event.preventDefault();
       }
-    })
-  }
-
-  // TODO: Подумать, стоит ли объединить метод сохранения одного и многих значений в один
-  // и если да, то как лучше и нагляднее это сделать.
-  // https://stackoverflow.com/questions/54176735/correct-way-to-add-multiple-objects-in-indexeddb
-  saveMany(storage, data) {
-    return new Promise((resolve, reject) => {
-      const tx = this.database.transaction(storage, "readwrite");
-      const st = tx.objectStore(storage);
-
-      data.forEach(d => st.add(d));
-
-      tx.oncomplete = () => {
-        resolve(data);
+      tx.oncomplete = (event) => {
+        resolve(saveReport);
       }
     })
   }
 
-  delete(storage: string, key) {
+  /**
+   * Метод пытается сохранить данные в указанное хранилище. Результат сохранения,
+   * будь то успешный или не успешный, добавляет в массив отчета о сохранении.
+   * @param storage Объект хранилища, в которое осуществляется сохранение.
+   * @param data Данные, которые пытаемся сохранить.
+   * @param result Массив под отчеты о результате сохранения.
+   */
+  private trySave(storage, data, result) {
+    const saveRequest = storage.add(data);
+    saveRequest.onsuccess = () => {
+      result.push({ succeeded: true, error: null, data });
+    }
+    saveRequest.onerror = () => {
+      result.push({ succeeded: false, error: saveRequest.error, data });
+    }
+  }
+
+  // // TODO: Подумать, стоит ли объединить метод сохранения одного и многих значений в один
+  // // и если да, то как лучше и нагляднее это сделать.
+  // // https://stackoverflow.com/questions/54176735/correct-way-to-add-multiple-objects-in-indexeddb
+  // saveMany(storage, data) {
+  //   return new Promise((resolve, reject) => {
+  //     const tx = this.database.transaction(storage, "readwrite");
+  //     const st = tx.objectStore(storage);
+
+  //     data.forEach(d => st.add(d));
+
+  //     tx.oncomplete = () => {
+  //       resolve(data);
+  //     }
+  //     tx.onabort = () => {
+  //       reject("Сохранение провалилось.");
+  //     }
+  //   })
+  // }
+
+  delete(storageName: string, key) {
     return new Promise((resolve, reject) => {
-      const tx = this.database.transaction(storage, "readwrite");
-      const st = tx.objectStore(storage);
-      const deleteRequest = st.delete(key);
+      const tx = this.database.transaction(storageName, "readwrite");
+      const storage = tx.objectStore(storageName);
+      const deleteRequest = storage.delete(key);
 
       deleteRequest.onsuccess = () => {
         resolve(true);
       };
+      deleteRequest.onerror = () => {
+        reject(deleteRequest.error);
+      }
     });
   }
 
-  // TODO: сделать для чтения единственного значения и всех значений разные методы или пусть будет в одном?
-  // TODO: если не нашел данные, вернуть null?
   read(storage: string, key) {
     return new Promise((resolve, reject) => {
       const tx = this.database.transaction(storage);
       const st = tx.objectStore(storage);
       const itemRequest = key ? st.get(key) : st.getAll();
 
-      // TODO: а если такого ключа нет в БД? UPD. Тогда в .result лежит undefined
-      // Если getAll(), а данных нет, тоже будет undefined.
       itemRequest.onsuccess = () => {
         resolve(itemRequest.result);
       }
