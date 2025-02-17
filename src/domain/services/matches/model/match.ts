@@ -1,7 +1,7 @@
 import { MatchPlayer } from "./match-player";
 
 export class Match {
-  id
+  id: number;
   radiantScore: number;
   direScore: number;
   startDateTime

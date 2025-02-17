@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Match from "./Match/Match";
 
 /*-----------------------------------------------------*/
-import { idbConfig } from '@domain/database/config/idb-config';
+import { defaultDbConfig } from '@domain/database/config/defaultDbConfig';
 import { Database } from "@domain/database/database";
 import { MatchService } from '@domain/services/matches/match-service';
 /*-----------------------------------------------------*/
@@ -14,7 +14,7 @@ export default function Matches() {
 
   useEffect(() => {
     async function initDb() {
-      const database = new Database(idbConfig);
+      const database = new Database(defaultDbConfig);
       await database.init();
       const accountId = 56831765;
       const ms = new MatchService(database);

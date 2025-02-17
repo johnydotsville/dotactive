@@ -8,27 +8,26 @@
     * В случае сохранения многих записей, если происходит ошибка, то
       * Откатывать все записи?
       * Или сохраненные успешно оставить, а провальные вернуть каким-нибудь списком?
+  * Типизация:
+    * Мб в местах сохранения и т.д. сделать дженерики? А потом создать типы под работу
+      с конкретными хранилищами?
 */
 
-/*
-  {
-    succeeded: true | false,
-    message: "",
-    data: any
-  }
-*/
+import { IDbConfig } from "./config/IDbConfig";
+import { IStorage } from "./config/IDbConfig";
+import { IStorageIndex } from "./config/IDbConfig";
+import { DbOperationResult } from "./db-operation-result";
 
 
 export class Database {
-  config: any;
-  database: any;
+  private config: IDbConfig;
+  private database: IDBDatabase;
 
-  // TODO: потом более продвинутую структуру можно сделать, чтобы таблицы во вложенном объекте были
-  constructor(config) {
+  constructor(config: IDbConfig) {
     this.config = config;
   }
 
-  init() {  // Можно ли типизировать, чтобы промис возвращал объект? Если норм, то условно success: true, message: пусто, а если не норм, то success: false и текст ошибки в message
+  init(): Promise<boolean | Error> {
     return new Promise((resolve, reject) => {
       if (this.database) {
         console.log("База данных уже открыта.");
@@ -36,35 +35,37 @@ export class Database {
         return;
       };
       console.log("База данных не обнаружена. Создаю базу данных...");
-      const openRequest = indexedDB.open(this.config.dbname, this.config.version);
+      const openRequest: IDBOpenDBRequest = indexedDB.open(this.config.name, this.config.version);
 
       openRequest.onupgradeneeded = () => {
-        const database = openRequest.result;
+        const database: IDBDatabase = openRequest.result;
         this.createStorages(database, this.config.storages);
       };
 
       openRequest.onsuccess = () => {
         this.database = openRequest.result;
-        resolve({ succeeded: true, message: "" });
+        resolve(true);
       };
 
       openRequest.onerror = () => {
-        reject({ succeeded: false, message: openRequest.error });
+        reject(openRequest.error);
       };
     })
   }
 
-  private createStorages(database, storages) {
+  private createStorages(database: IDBDatabase, storages: IStorage[]) {
     storages.forEach(s => {
       if (!database.objectStoreNames.contains(s.name)) {
-        const storage = database.createObjectStore(s.name, s.options);
-        this.createIndexes(storage, s.indexes);
+        const storage: IDBObjectStore = database.createObjectStore(s.name, s?.options);
+        if (s.indexes) {
+          this.createIndexes(storage, s.indexes);
+        }
       }
     });
   }
 
-  private createIndexes(storage, indexes) {
-    indexes.forEach(x => storage.createIndex(x.name, x.keyPath, x.options));
+  private createIndexes(storage: IDBObjectStore, indexes: IStorageIndex[]) {
+    indexes.forEach(x => storage.createIndex(x.name, x.keyPath, x?.options));
   }
   
   /**
@@ -75,11 +76,11 @@ export class Database {
    * @param data 
    * @returns 
    */
-  save(storageName: string, data) {
+  save(storageName: string, data: any) {
     return new Promise(resolve => {
-      const tx = this.database.transaction(storageName, "readwrite");
-      const storage = tx.objectStore(storageName);
-      const saveReport = [];
+      const tx: IDBTransaction = this.database.transaction(storageName, "readwrite");
+      const storage: IDBObjectStore = tx.objectStore(storageName);
+      const saveReport: DbOperationResult<any>[] = [];
 
       if (Array.isArray(data)) {
         data.forEach(x => this.trySave(storage, x, saveReport));
@@ -103,8 +104,8 @@ export class Database {
    * @param data Данные, которые пытаемся сохранить.
    * @param result Массив под отчеты о результате сохранения.
    */
-  private trySave(storage, data, result) {
-    const saveRequest = storage.add(data);
+  private trySave(storage:IDBObjectStore, data: any, result: DbOperationResult<any>[]) {
+    const saveRequest: IDBRequest = storage.add(data);
     saveRequest.onsuccess = () => {
       result.push({ succeeded: true, error: null, data });
     }
