@@ -1,10 +1,10 @@
 export interface IDbConfig {
   version: number;
   name: string;
-  storages: IStorage[];
+  storages: IStorageConfig[];
 }
 
-export interface IStorage {
+export interface IStorageConfig {
   name: string;
   options?: IStorageOptions; 
   indexes?: IStorageIndex[]

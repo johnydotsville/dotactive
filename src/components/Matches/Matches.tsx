@@ -4,7 +4,7 @@ import Match from "./Match/Match";
 
 /*-----------------------------------------------------*/
 import { defaultDbConfig } from '@domain/database/config/defaultDbConfig';
-import { Database } from "@domain/database/database";
+// import { Database } from '@domain/database/Database';
 import { MatchService } from '@domain/services/matches/match-service';
 /*-----------------------------------------------------*/
 
@@ -14,12 +14,12 @@ export default function Matches() {
 
   useEffect(() => {
     async function initDb() {
-      const database = new Database(defaultDbConfig);
-      await database.init();
-      const accountId = 56831765;
-      const ms = new MatchService(database);
-      await ms.init(accountId);
-      setMatches(ms.getAllMatches());
+      // const database = new Database(defaultDbConfig);
+      // await database.init();
+      // const accountId = 56831765;
+      // const ms = new MatchService(database, null);
+      // await ms.init(accountId);
+      // setMatches(ms.getAllMatches());
     }
     initDb();
   }, []);

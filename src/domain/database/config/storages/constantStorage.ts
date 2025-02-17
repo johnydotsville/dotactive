@@ -1,5 +1,5 @@
-import { IStorage } from "../IDbConfig";
+import { IStorageConfig } from "../IDbConfig";
 
-export const constantStorageConfig: IStorage = {
+export const constantStorageConfig: IStorageConfig = {
   name: "constants",
 };

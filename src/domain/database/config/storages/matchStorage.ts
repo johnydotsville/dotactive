@@ -1,6 +1,10 @@
-import { IStorage } from "../IDbConfig";
+import { IStorageConfig } from "../IDbConfig";
 
-export const matchStorageConfig: IStorage = {
+// Сюда, возможно надо добавить еще тип данных, с которым будет работать хранилище.
+// Например, это хранилище - под матчи. Значит как-то сюда этот тип указать, чтобы
+// при создании экземпляров хранилища оно могло типизироваться этим типом.
+
+export const matchStorageConfig: IStorageConfig = {
   name: "matches",
   options: {
     keyPath: "id"

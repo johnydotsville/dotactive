@@ -14,14 +14,14 @@
 */
 
 import { IDbConfig } from "./config/IDbConfig";
-import { IStorage } from "./config/IDbConfig";
+import { IStorageConfig } from "./config/IDbConfig";
 import { IStorageIndex } from "./config/IDbConfig";
 import { DbOperationResult } from "./db-operation-result";
 
 
 export class Database {
   private config: IDbConfig;
-  private database: IDBDatabase;
+  public database: IDBDatabase;
 
   constructor(config: IDbConfig) {
     this.config = config;
@@ -53,7 +53,7 @@ export class Database {
     })
   }
 
-  private createStorages(database: IDBDatabase, storages: IStorage[]) {
+  private createStorages(database: IDBDatabase, storages: IStorageConfig[]) {
     storages.forEach(s => {
       if (!database.objectStoreNames.contains(s.name)) {
         const storage: IDBObjectStore = database.createObjectStore(s.name, s?.options);
