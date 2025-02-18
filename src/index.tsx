@@ -18,13 +18,15 @@ async function prepare() {
   const matchStorage = new MatchesStorage(database.database, "matches");
   const ms = new MatchService(database, matchStorage);
   await ms.init(accountId);
-  const matches = await ms.getAllMatches();
+  // const matches = await ms.getAllMatches();
+  const matches = await ms.getMatches();
   console.log(matches);
 
-  const match = await ms.getMatch(8145432965);
+  // const match = await ms.getMatch(8145432965);
+  const match = await ms.getMatches(8145432965);
   console.log(match);
 
-  const fewMatches = await ms.getMatches(8146456949, 8148280087, 8166687583);
+  const fewMatches = await ms.getMatches(8146456949, 8148280087, 8166687583, 228);
   console.log(fewMatches);
 
   const root = ReactDOM.createRoot(document.getElementById('root'));

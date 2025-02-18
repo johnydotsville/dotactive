@@ -64,8 +64,7 @@ export class MatchService {
   }
 
   public async getMatches(...ids: number[]) {
-    // const result = await this.database.read(this.storage, id);
-    const result = await this.store228.read(ids);
+    const result = await this.store228.read(...ids);
     return result;
   }
 }
