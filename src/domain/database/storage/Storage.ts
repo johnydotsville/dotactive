@@ -115,11 +115,11 @@ export class Storage<T, K> implements IStorage<T, K> {
     }
   }
 
-  // TODO:  дописать чтение нескольких матчей (произвольных)
+  
   public read(key?: K | K[]): Promise<DbOperationResult<T | K>[]> {
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRO();
-      const readReport: DbOperationResult<K>[] = [];
+      const readReport: DbOperationResult<T | K>[] = [];
       
       if (Array.isArray(key)) {
         key.forEach(k => this.tryRead(storage, k, readReport));
@@ -131,12 +131,10 @@ export class Storage<T, K> implements IStorage<T, K> {
           readRequest.result.forEach(r => {
             readReport.push({ 
                 succeeded: true, 
-                error: null,
                 data: r
               });
           });
         }
-
         readRequest.onerror = () => {
           readReport.push({ 
             succeeded: false, 
@@ -162,7 +160,6 @@ export class Storage<T, K> implements IStorage<T, K> {
       if (readRequest.result) {
         report.push({ 
           succeeded: true, 
-          error: null, 
           data: readRequest.result 
         });
       } else {

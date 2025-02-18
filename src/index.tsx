@@ -24,7 +24,7 @@ async function prepare() {
   const match = await ms.getMatch(8145432965);
   console.log(match);
 
-  const fewMatches = await ms.getMatches([8146456949, 8148280087, 8166687583]);
+  const fewMatches = await ms.getMatches(8146456949, 8148280087, 8166687583);
   console.log(fewMatches);
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
