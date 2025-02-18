@@ -4,8 +4,8 @@ import axios, {isCancel, AxiosError} from '../../../../node_modules/axios';
 import { Match } from './model/match';
 import { MatchQueryBuilder} from './match-query-builder';
 import { AxiosGraphqlQueryAdapter } from '@utils/axios-graphql-query-adapter';
-import { IStorage } from '@domain/database/IStorage';
-import { MatchesStorage } from '@domain/database/MatchesStorage';
+import { IStorage } from '@domain/database/storage/IStorage';
+import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
 
 export class MatchService {
   private database;
@@ -27,7 +27,7 @@ export class MatchService {
     if (fromDb.length === 0) {
       const loaded = await this.loadMatchesForPlayer(playerAccountId);
       const tmp = await this.store228.save(loaded);
-      this.matches = tmp.map(x => x.data);
+      // this.matches = tmp.map(x => x.data);
       debugger
       // this.matches = await this.saveMatches(loaded);
     } else {
@@ -52,12 +52,20 @@ export class MatchService {
     return result;
   }
 
-  public getAllMatches(): Match[] {
-    return this.matches;
+  public async getAllMatches() {
+    const result = await this.store228.read();
+    return result;
   }
 
-  public async getMatch(id) {
-    const result = await this.database.read(this.storage, id);
+  public async getMatch(id: number) {
+    // const result = await this.database.read(this.storage, id);
+    const result = await this.store228.read(id);
+    return result;
+  }
+
+  public async getMatches(ids: number[]) {
+    // const result = await this.database.read(this.storage, id);
+    const result = await this.store228.read(ids);
     return result;
   }
 }

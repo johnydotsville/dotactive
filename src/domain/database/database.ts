@@ -16,7 +16,7 @@
 import { IDbConfig } from "./config/IDbConfig";
 import { IStorageConfig } from "./config/IDbConfig";
 import { IStorageIndex } from "./config/IDbConfig";
-import { DbOperationResult } from "./db-operation-result";
+import { DbOperationResult } from "./DbOperationResult";
 
 
 export class Database {

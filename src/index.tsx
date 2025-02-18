@@ -7,8 +7,7 @@ import { ConstantManager } from './domain/services/constants/constant-manager';
 import { PlayerService } from '@domain/services/player/player-service';
 import { MatchService } from '@domain/services/matches/match-service';
 import { Match } from '@domain/services/matches/model/match';
-import { Storage } from '@domain/database/IStorage';
-import { MatchesStorage } from '@domain/database/MatchesStorage';
+import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
 
 async function prepare() {
   const database = new Database(defaultDbConfig);
@@ -19,10 +18,14 @@ async function prepare() {
   const matchStorage = new MatchesStorage(database.database, "matches");
   const ms = new MatchService(database, matchStorage);
   await ms.init(accountId);
-  const matches = ms.getAllMatches();
+  const matches = await ms.getAllMatches();
   console.log(matches);
-  const match = await ms.getMatch(8142183007);
+
+  const match = await ms.getMatch(8145432965);
   console.log(match);
+
+  const fewMatches = await ms.getMatches([8146456949, 8148280087, 8166687583]);
+  console.log(fewMatches);
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(

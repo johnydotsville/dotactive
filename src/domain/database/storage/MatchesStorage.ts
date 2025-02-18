@@ -1,4 +1,4 @@
-import { Storage } from "./IStorage";
+import { Storage } from "./Storage";
 import { Match } from "@domain/services/matches/model/match";
 
 export class MatchesStorage extends Storage<Match, number> {
