@@ -1,6 +1,7 @@
 import { IStorage } from "./IStorage";
 import { DbOperationResult } from "../DbOperationResult";
 
+
 export class Storage<T, K> implements IStorage<T, K> {
   protected database: IDBDatabase;
   protected storageName: string;
@@ -17,10 +18,8 @@ export class Storage<T, K> implements IStorage<T, K> {
       const saveReport: DbOperationResult<T>[] = [];
 
       if (data.length === 0) {
-        saveReport.push({
-          succeeded: false,
-          error: new Error("В метод сохранения не переданы никакие данные.")
-        });
+        const error = new Error("В метод сохранения не переданы никакие данные.");
+        saveReport.push(DbOperationResult.fail<T>(error));
         reject(saveReport);
       }
       const [storage, tx] = this.getStorageRW();
