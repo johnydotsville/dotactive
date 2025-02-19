@@ -36,22 +36,21 @@ export class Storage<T, K> implements IStorage<T, K> {
     const saveRequest: IDBRequest = storage.put(data);
 
     saveRequest.onsuccess = () => {
-      result.push({
-        succeeded: true, 
-        data 
-      });
+      result.push(DbOperationResult.success<T>(data));
     }
 
     saveRequest.onerror = () => {
-      result.push({ 
-        succeeded: false, 
-        error: saveRequest.error, 
-        data 
-      });
+      result.push(DbOperationResult.fail<T>(saveRequest.error, data))
     }
   }
 
 
+  /**
+   * Считывает из хранилища записи с переданными ключами. Если метод вызывается
+   * без указания ключей, то считываются все записи.
+   * @param keys
+   * @returns 
+   */
   public read(...keys: K[]): Promise<DbOperationResult<T | K>[]> {
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRO();
@@ -62,12 +61,12 @@ export class Storage<T, K> implements IStorage<T, K> {
       } else {
         const readRequest = storage.getAll();
         readRequest.onsuccess = () => {
-          readRequest.result.forEach(r => {
-            readReport.push({ succeeded: true, data: r });
+          readRequest.result.forEach(d => {
+            readReport.push(DbOperationResult.success<T>(d));
           });
         }
         readRequest.onerror = () => {
-          readReport.push({ succeeded: false, error: readRequest.error });
+          readReport.push(DbOperationResult.fail<T>(readRequest.error));
         }
       }
 
@@ -83,29 +82,24 @@ export class Storage<T, K> implements IStorage<T, K> {
     
     readRequest.onsuccess = () => {
       if (readRequest.result) {
-        report.push({ 
-          succeeded: true, 
-          data: readRequest.result 
-        });
+        report.push(DbOperationResult.success<T>(readRequest.result))
       } else {
-        report.push({ 
-          succeeded: false, 
-          error: new Error("Матч не найден"), 
-          data: key 
-        });
+        report.push(DbOperationResult.fail<K>(new Error("Матч не найден"), key));
       }
     }
 
     readRequest.onerror = () => {
-      report.push({ 
-        succeeded: false, 
-        error: readRequest.error, 
-        data: key 
-      });
+      report.push(DbOperationResult.fail<K>(readRequest.error, key));
     }
   }
 
 
+  /**
+   * Удаляет из хранилища записи с указанными ключами. Если метод вызывается без
+   * указания ключей, тогда хранилище полностью очищается.
+   * @param keys
+   * @returns 
+   */
   public delete(...keys: K[]): Promise<DbOperationResult<K>[]> {
     return new Promise(resolve => {
       const [storage, tx] = this.getStorageRW();
@@ -116,15 +110,10 @@ export class Storage<T, K> implements IStorage<T, K> {
       } else {
         const deleteRequest = storage.clear();
         deleteRequest.onsuccess = () => {
-          deleteReport.push({ 
-            succeeded: true 
-          });
+          deleteReport.push(DbOperationResult.success<K>());
         }
         deleteRequest.onerror = () => {
-          deleteReport.push({ 
-            succeeded: false, 
-            error: deleteRequest.error 
-          });
+          deleteReport.push(DbOperationResult.fail<K>(deleteRequest.error));
         }
       }
 
@@ -139,24 +128,17 @@ export class Storage<T, K> implements IStorage<T, K> {
     const deleteRequest: IDBRequest = storage.delete(singleKey);
 
     deleteRequest.onsuccess = () => {
-      report.push({ 
-        succeeded: true, 
-        data: key 
-      });
+      report.push(DbOperationResult.success<K>(key));
     }
 
     deleteRequest.onerror = () => {
-      report.push({ 
-        succeeded: false, 
-        error: deleteRequest.error, 
-        data: key 
-      });
+      report.push(DbOperationResult.fail<K>(deleteRequest.error, key));
     }
   }
 
   
-  private getStorage(mode: string): [IDBObjectStore, IDBTransaction] {
-    const tx: IDBTransaction = this.database.transaction(this.storageName, "readwrite");
+  private getStorage(mode: IDBTransactionMode): [IDBObjectStore, IDBTransaction] {
+    const tx: IDBTransaction = this.database.transaction(this.storageName, mode);
     return [tx.objectStore(this.storageName), tx];
   }
 
@@ -170,3 +152,79 @@ export class Storage<T, K> implements IStorage<T, K> {
     return this.getStorage("readwrite");
   }
 }
+
+
+
+
+  // // Возвращает последнюю сохраненную запись из указанного хранилища
+  // // TODO: чтобы это работало, наверное должен быть индекс в хранилище? UPD. Индекс тут не при чем.
+  // // И вообще этот метод актуален только для хранилищ, где хранятся объекты одинаковой структуры.
+  // readLast(storeName) {
+  //   return new Promise((resolve, reject) => {
+  //     const ropen = indexedDB.open(this.dbname);
+      
+  //     ropen.onsuccess = (e: any) => {
+  //       try {
+  //         const db = e.target.result;
+  //         const tx = db.transaction(storeName, 'readonly');
+  //         const store = tx.objectStore(storeName);
+  //         const rcursor = store.openCursor(null, "prev");
+          
+  //         rcursor.onsuccess = (e) => {
+  //           const cursor = e.target.result;
+  //           if (cursor) {
+  //             resolve(cursor.value);
+  //           } else {
+  //             resolve(null);
+  //           }
+  //         }
+  //       } catch (err) {
+  //         reject(err);
+  //       }
+  //     };
+  //   });
+  // }
+
+
+  // // Считывает из указанного хранилища пачку записей
+  // // TODO: Возможно, есть смысл считывать вообще все записи в память и страничить уже из памяти.
+  // readPage(storeName, pageNum, pageSize) {
+  //   return new Promise((resolve, reject) => {
+  //     const ropen = indexedDB.open(this.dbname);
+      
+  //     ropen.onsuccess = (e: any) => {
+  //       try {
+  //         const matches = [];
+  //         let skip = true;
+  //         const skipSize = (pageNum - 1) * pageSize;
+          
+  //         const db = e.target.result;
+  //         const tx = db.transaction(storeName, 'readonly');
+  //         const store = tx.objectStore(storeName);
+  //         const rcursor = store.openCursor(null, "prev");
+          
+  //         rcursor.onsuccess = (e) => {
+  //           // Это получается "шаг цикла", обход курсора
+  //           const cursor = e.target.result;
+            
+  //           if (skip && skipSize > 0) {
+  //             skip = false;
+  //             cursor.advance(skipSize);
+  //             return;  // Это прервать текущий шаг и перейти на некст запись курсора
+  //           }
+
+  //           if (cursor) {
+  //             matches.push(cursor.value);
+  //             if (matches.length < pageSize) {
+  //               cursor.continue();  // Похоже, приводит к возникновению onsuccess
+  //             } else {
+  //               resolve(matches);
+  //             }
+  //           }
+  //         }
+  //       } catch (err) {
+  //         reject(err);
+  //       }
+  //     };
+  //   });
+  // }

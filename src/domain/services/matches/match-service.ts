@@ -21,8 +21,8 @@ export class MatchService {
   }
 
   public async init(playerAccountId: number) {
-    const fromDb = await this.database.read(this.storage);
-    // const fromDb = await this.store228.read();
+    // const fromDb = await this.database.read(this.storage);
+    const fromDb = await this.store228.read();
     // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
     if (fromDb.length === 0) {
       const loaded = await this.loadMatchesForPlayer(playerAccountId);
@@ -31,7 +31,7 @@ export class MatchService {
       debugger
       // this.matches = await this.saveMatches(loaded);
     } else {
-      this.matches = fromDb;
+      // this.matches = fromDb.map(x => x.data);
     }
   }
 
@@ -65,6 +65,11 @@ export class MatchService {
 
   public async getMatches(...ids: number[]) {
     const result = await this.store228.read(...ids);
+    return result;
+  }
+
+  public async deleteMatches(...ids: number[]) {
+    const result = await this.store228.delete(...ids);
     return result;
   }
 }
