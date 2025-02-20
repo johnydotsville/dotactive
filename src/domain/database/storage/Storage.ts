@@ -1,19 +1,31 @@
+import { MyDatabase } from "@domain/database/MyDatabase";
 import { IStorage } from "./IStorage";
-import { DbOperationResult } from "../DbOperationResult";
+import { DbOperationResult } from "@domain/database/DbOperationResult";
 
 
 export class Storage<T, K> implements IStorage<T, K> {
-  protected database: IDBDatabase;
+  protected database: MyDatabase;
   protected storageName: string;
+  protected connection?: IDBDatabase;
 
 
-  public constructor(database: IDBDatabase, storageName: string) {
+  public constructor(database: MyDatabase, storageName: string) {
     this.database = database;
     this.storageName = storageName;
   }
 
 
+  public async init(): Promise<void> {
+    if (!this.connection) {
+      this.connection = await this.database.getConnection();
+    }
+  }
+
+
   public save(...data: T[]): Promise<DbOperationResult<T>[]> {
+    if (!this.connection) {
+      return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
+    }
     return new Promise((resolve, reject) => {
       const saveReport: DbOperationResult<T>[] = [];
 
@@ -51,6 +63,9 @@ export class Storage<T, K> implements IStorage<T, K> {
    * @returns 
    */
   public read(...keys: K[]): Promise<DbOperationResult<T | K>[]> {
+    if (!this.connection) {
+      return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
+    }
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRO();
       const readReport: DbOperationResult<T | K>[] = [];
@@ -100,6 +115,9 @@ export class Storage<T, K> implements IStorage<T, K> {
    * @returns 
    */
   public delete(...keys: K[]): Promise<DbOperationResult<K>[]> {
+    if (!this.connection) {
+      return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
+    }
     return new Promise(resolve => {
       const [storage, tx] = this.getStorageRW();
       const deleteReport: DbOperationResult<K>[] = [];
@@ -137,7 +155,7 @@ export class Storage<T, K> implements IStorage<T, K> {
 
   
   private getStorage(mode: IDBTransactionMode): [IDBObjectStore, IDBTransaction] {
-    const tx: IDBTransaction = this.database.transaction(this.storageName, mode);
+    const tx: IDBTransaction = this.connection.transaction(this.storageName, mode);
     return [tx.objectStore(this.storageName), tx];
   }
 

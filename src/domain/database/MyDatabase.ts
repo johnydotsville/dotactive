@@ -3,7 +3,7 @@ import { IStorageConfig } from "./config/IDbConfig";
 import { IStorageIndex } from "./config/IDbConfig";
 
 
-export class Database {
+export class MyDatabase {
   private config: IDbConfig;
   private connection: IDBDatabase;
 
@@ -13,7 +13,7 @@ export class Database {
   }
 
 
-  public init(): Promise<IDBDatabase> {
+  public getConnection(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       if (this.connection) {
         console.log("База данных уже открыта.");
@@ -38,6 +38,9 @@ export class Database {
       };
     })
   }
+
+
+  // TODO: мб сделать еще метод для закрытия соединения?
 
 
   private createStorages(database: IDBDatabase, storages: IStorageConfig[]) {

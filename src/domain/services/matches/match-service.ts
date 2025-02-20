@@ -11,22 +11,19 @@ export class MatchService {
   private database;
   private requestConfig;
   private matches: Match[];
-  private storage: string = "matches";
-  private store228: MatchesStorage;
+  private storage: MatchesStorage;
 
-  public constructor(database, store228: MatchesStorage) {
-    this.database = database;
+  public constructor(storage: MatchesStorage) {
     this.requestConfig = stratzRequestConfig;
-    this.store228 = store228;
+    this.storage = storage;
   }
 
   public async init(playerAccountId: number) {
-    // const fromDb = await this.database.read(this.storage);
-    const fromDb = await this.store228.read();
+    const fromDb = await this.storage.read();
     // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
     if (fromDb.length === 0) {
       const loaded = await this.loadMatchesForPlayer(playerAccountId);
-      const tmp = await this.store228.save(loaded);
+      const tmp = await this.storage.save(loaded);
       // this.matches = tmp.map(x => x.data);
       debugger
       // this.matches = await this.saveMatches(loaded);
@@ -53,23 +50,23 @@ export class MatchService {
   }
 
   public async getAllMatches() {
-    const result = await this.store228.read();
+    const result = await this.storage.read();
     return result;
   }
 
   public async getMatch(id: number) {
     // const result = await this.database.read(this.storage, id);
-    const result = await this.store228.read(id);
+    const result = await this.storage.read(id);
     return result;
   }
 
   public async getMatches(...ids: number[]) {
-    const result = await this.store228.read(...ids);
+    const result = await this.storage.read(...ids);
     return result;
   }
 
   public async deleteMatches(...ids: number[]) {
-    const result = await this.store228.delete(...ids);
+    const result = await this.storage.delete(...ids);
     return result;
   }
 }
