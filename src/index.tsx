@@ -10,7 +10,7 @@ import { Match } from '@domain/services/matches/model/match';
 import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
 
 async function prepare() {
-  const database = new MyDatabase(defaultDbConfig);
+  const database = MyDatabase.create(defaultDbConfig);
 
   const accountId = 56831765;
 

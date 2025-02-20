@@ -6,10 +6,19 @@ import { IStorageIndex } from "./config/IDbConfig";
 export class MyDatabase {
   private config: IDbConfig;
   private connection: IDBDatabase;
+  private static instance: MyDatabase;
 
-
-  constructor(config: IDbConfig) {
+  
+  private constructor(config: IDbConfig) {
     this.config = config;
+  }
+
+
+  public static create(config: IDbConfig): MyDatabase {
+    if (!this.instance) {
+      this.instance = new MyDatabase(config);
+    }
+    return this.instance;
   }
 
 
