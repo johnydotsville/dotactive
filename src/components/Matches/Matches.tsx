@@ -5,7 +5,7 @@ import Match from "./Match/Match";
 /*-----------------------------------------------------*/
 import { defaultDbConfig } from '@domain/database/config/defaultDbConfig';
 // import { Database } from '@domain/database/Database';
-import { MatchService } from '@domain/services/matches/match-service';
+import { MatchService } from '@domain/services/matches/MatchService';
 /*-----------------------------------------------------*/
 
 export default function Matches() {

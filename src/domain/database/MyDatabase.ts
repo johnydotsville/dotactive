@@ -13,7 +13,7 @@ export class MyDatabase {
   }
 
 
-  public init(): Promise<IDBDatabase> {
+  public getConnection(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       if (this.connection) {
         console.log("База данных уже открыта.");
@@ -26,12 +26,10 @@ export class MyDatabase {
       openRequest.onupgradeneeded = () => {
         const database: IDBDatabase = openRequest.result;
         this.createStorages(database, this.config.storages);
-        console.log("База данных создана.");
       };
 
       openRequest.onsuccess = () => {
         this.connection = openRequest.result;
-        console.log("Соединение открыто.");
         resolve(this.connection);
       };
 
@@ -42,6 +40,9 @@ export class MyDatabase {
   }
 
 
+  // TODO: мб сделать еще метод для закрытия соединения?
+
+  
   private createStorages(database: IDBDatabase, storages: IStorageConfig[]) {
     storages.forEach(s => {
       if (!database.objectStoreNames.contains(s.name)) {

@@ -1,5 +1,5 @@
 import { stratzRequestConfig } from '@utils/stratz-request-config';
-import axios, {isCancel, AxiosError} from '../../../../node_modules/axios';
+import axios, {isCancel, AxiosError} from 'axios';
 // import axios, {isCancel, AxiosError} from 'axios';
 import { Match } from './model/match';
 import { MatchQueryBuilder} from './match-query-builder';
@@ -11,27 +11,28 @@ export class MatchService {
   private database;
   private requestConfig;
   private matches: Match[];
-  private storage: string = "matches";
-  private store228: MatchesStorage;
+  private storage: MatchesStorage;
 
-  public constructor(database, store228: MatchesStorage) {
-    this.database = database;
+  public constructor(storage: MatchesStorage) {
     this.requestConfig = stratzRequestConfig;
-    this.store228 = store228;
+    this.storage = storage;
   }
 
   public async init(playerAccountId: number) {
-    // const fromDb = await this.database.read(this.storage);
-    const fromDb = await this.store228.read();
-    // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
-    if (fromDb.length === 0) {
-      const loaded = await this.loadMatchesForPlayer(playerAccountId);
-      const tmp = await this.store228.save(loaded);
-      // this.matches = tmp.map(x => x.data);
-      debugger
-      // this.matches = await this.saveMatches(loaded);
-    } else {
-      // this.matches = fromDb.map(x => x.data);
+    await this.storage.init();
+    try {
+      const fromDb = await this.storage.read();
+      // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
+      if (fromDb.length === 0) {
+        const loaded = await this.loadMatchesForPlayer(playerAccountId);
+        const tmp = await this.storage.save(loaded);
+        // this.matches = tmp.map(x => x.data);
+        // this.matches = await this.saveMatches(loaded);
+      } else {
+        // this.matches = fromDb.map(x => x.data);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -53,23 +54,23 @@ export class MatchService {
   }
 
   public async getAllMatches() {
-    const result = await this.store228.read();
+    const result = await this.storage.read();
     return result;
   }
 
   public async getMatch(id: number) {
     // const result = await this.database.read(this.storage, id);
-    const result = await this.store228.read(id);
+    const result = await this.storage.read(id);
     return result;
   }
 
   public async getMatches(...ids: number[]) {
-    const result = await this.store228.read(...ids);
+    const result = await this.storage.read(...ids);
     return result;
   }
 
   public async deleteMatches(...ids: number[]) {
-    const result = await this.store228.delete(...ids);
+    const result = await this.storage.delete(...ids);
     return result;
   }
 }
