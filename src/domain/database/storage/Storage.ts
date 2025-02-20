@@ -28,6 +28,7 @@ export class Storage<T, K> implements IStorage<T, K> {
       const error = new Error("Хранилище не инициализировано.");
       return Promise.reject(DbOperationResult.fail<T>(error));
     }
+    
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRW();
       const saveReport: DbOperationResult<T>[] = [];
@@ -48,18 +49,18 @@ export class Storage<T, K> implements IStorage<T, K> {
   }
 
 
-  private trySave(storage:IDBObjectStore, data: T, result: DbOperationResult<T>[]): void {
+  private trySave(storage:IDBObjectStore, data: T, report: DbOperationResult<T>[]): void {
     try {
       const saveRequest: IDBRequest = storage.put(data);
       saveRequest.onsuccess = () => {
-        result.push(DbOperationResult.success<T>(data));
+        report.push(DbOperationResult.success<T>(data));
       }
   
       saveRequest.onerror = () => {
-        result.push(DbOperationResult.fail<T>(saveRequest.error, data));
+        report.push(DbOperationResult.fail<T>(saveRequest.error, data));
       }
     } catch (error) {
-      result.push(DbOperationResult.fail<T>(error, data));
+      report.push(DbOperationResult.fail<T>(error, data));
     }
   }
 
@@ -72,8 +73,10 @@ export class Storage<T, K> implements IStorage<T, K> {
    */
   public read(key?: K | K[]): Promise<DbOperationResult<T | K>[]> {
     if (!this.connection) {
-      return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
+      const error = new Error("Хранилище не инициализировано.");
+      return Promise.reject(DbOperationResult.fail<T>(error))
     }
+
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRO();
       const readReport: DbOperationResult<T | K>[] = [];
@@ -106,18 +109,22 @@ export class Storage<T, K> implements IStorage<T, K> {
 
   private tryRead(storage:IDBObjectStore, key: K, report: DbOperationResult<T | K>[]): void {
     const singleKey = IDBKeyRange.only(key);
-    const readRequest: IDBRequest = storage.get(singleKey);
-    
-    readRequest.onsuccess = () => {
-      if (readRequest.result) {
-        report.push(DbOperationResult.success<T>(readRequest.result))
-      } else {
-        report.push(DbOperationResult.fail<K>(new Error("Матч не найден"), key));
+    try {
+      const readRequest: IDBRequest = storage.get(singleKey);
+      
+      readRequest.onsuccess = () => {
+        if (readRequest.result) {
+          report.push(DbOperationResult.success<T>(readRequest.result))
+        } else {
+          report.push(DbOperationResult.fail<K>(new Error("Матч не найден"), key));
+        }
       }
-    }
 
-    readRequest.onerror = () => {
-      report.push(DbOperationResult.fail<K>(readRequest.error, key));
+      readRequest.onerror = () => {
+        report.push(DbOperationResult.fail<K>(readRequest.error, key));
+      }
+    } catch (error) {
+      report.push(DbOperationResult.fail<K>(error, key));
     }
   }
 
@@ -130,8 +137,10 @@ export class Storage<T, K> implements IStorage<T, K> {
    */
   public delete(key?: K | K[]): Promise<DbOperationResult<K>[]> {
     if (!this.connection) {
-      return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
+      const error = new Error("Хранилище не инициализировано.");
+      return Promise.reject(DbOperationResult.fail<T>(error))
     }
+
     return new Promise(resolve => {
       const [storage, tx] = this.getStorageRW();
       const deleteReport: DbOperationResult<K>[] = [];
@@ -162,14 +171,18 @@ export class Storage<T, K> implements IStorage<T, K> {
 
   private tryDelete(storage:IDBObjectStore, key: K, report: DbOperationResult<K>[]): void {
     const singleKey = IDBKeyRange.only(key);
-    const deleteRequest: IDBRequest = storage.delete(singleKey);
+    try {
+      const deleteRequest: IDBRequest = storage.delete(singleKey);
 
-    deleteRequest.onsuccess = () => {
-      report.push(DbOperationResult.success<K>(key));
-    }
+      deleteRequest.onsuccess = () => {
+        report.push(DbOperationResult.success<K>(key));
+      }
 
-    deleteRequest.onerror = () => {
-      report.push(DbOperationResult.fail<K>(deleteRequest.error, key));
+      deleteRequest.onerror = () => {
+        report.push(DbOperationResult.fail<K>(deleteRequest.error, key));
+      }
+    } catch (error) {
+      report.push(DbOperationResult.fail<K>(error, key));
     }
   }
 
