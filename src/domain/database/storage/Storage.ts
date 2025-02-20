@@ -9,9 +9,10 @@ export class Storage<T, K> implements IStorage<T, K> {
   protected connection?: IDBDatabase;
 
 
-  public constructor(database: MyDatabase, storageName: string) {
+  public constructor(database: MyDatabase, storageName: string, connection?: IDBDatabase) {
     this.database = database;
     this.storageName = storageName;
+    this.connection = connection;
   }
 
 
@@ -22,20 +23,24 @@ export class Storage<T, K> implements IStorage<T, K> {
   }
 
 
-  public save(...data: T[]): Promise<DbOperationResult<T>[]> {
+  public save(data: T | T[]): Promise<DbOperationResult<T>[]> {
     if (!this.connection) {
-      return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
+      const error = new Error("Хранилище не инициализировано.");
+      return Promise.reject(DbOperationResult.fail<T>(error));
     }
     return new Promise((resolve, reject) => {
+      const [storage, tx] = this.getStorageRW();
       const saveReport: DbOperationResult<T>[] = [];
 
-      if (data.length === 0) {
-        const error = new Error("В метод сохранения не переданы никакие данные.");
-        saveReport.push(DbOperationResult.fail<T>(error));
-        reject(saveReport);
+      if (Array.isArray(data)) {
+        if (data.length === 0) {
+          const error = new Error("Не переданы данные для сохранения.");
+          return Promise.reject(DbOperationResult.fail<T>(error));
+        }
+        data.forEach(x => this.trySave(storage, x, saveReport));
+      } else {
+        this.trySave(storage, data, saveReport);
       }
-      const [storage, tx] = this.getStorageRW();
-      data.forEach(x => this.trySave(storage, x, saveReport));
 
       tx.onerror = (event) => event.preventDefault();
       tx.oncomplete = () => resolve(saveReport);
@@ -44,14 +49,17 @@ export class Storage<T, K> implements IStorage<T, K> {
 
 
   private trySave(storage:IDBObjectStore, data: T, result: DbOperationResult<T>[]): void {
-    const saveRequest: IDBRequest = storage.put(data);
-
-    saveRequest.onsuccess = () => {
-      result.push(DbOperationResult.success<T>(data));
-    }
-
-    saveRequest.onerror = () => {
-      result.push(DbOperationResult.fail<T>(saveRequest.error, data))
+    try {
+      const saveRequest: IDBRequest = storage.put(data);
+      saveRequest.onsuccess = () => {
+        result.push(DbOperationResult.success<T>(data));
+      }
+  
+      saveRequest.onerror = () => {
+        result.push(DbOperationResult.fail<T>(saveRequest.error, data));
+      }
+    } catch (error) {
+      result.push(DbOperationResult.fail<T>(error, data));
     }
   }
 
@@ -59,10 +67,10 @@ export class Storage<T, K> implements IStorage<T, K> {
   /**
    * Считывает из хранилища записи с переданными ключами. Если метод вызывается
    * без указания ключей, то считываются все записи.
-   * @param keys
+   * @param key
    * @returns 
    */
-  public read(...keys: K[]): Promise<DbOperationResult<T | K>[]> {
+  public read(key?: K | K[]): Promise<DbOperationResult<T | K>[]> {
     if (!this.connection) {
       return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
     }
@@ -70,8 +78,14 @@ export class Storage<T, K> implements IStorage<T, K> {
       const [storage, tx] = this.getStorageRO();
       const readReport: DbOperationResult<T | K>[] = [];
       
-      if (keys.length > 0) {
-        keys.forEach(k => this.tryRead(storage, k, readReport));
+      if (Array.isArray(key)) {
+        if (key.length === 0) {
+          const error = new Error("Не переданы ключи.");
+          return Promise.reject(DbOperationResult.fail<K>(error));
+        }
+        key.forEach(k => this.tryRead(storage, k, readReport));
+      } else if (key) {
+        this.tryRead(storage, key, readReport);
       } else {
         const readRequest = storage.getAll();
         readRequest.onsuccess = () => {
@@ -111,10 +125,10 @@ export class Storage<T, K> implements IStorage<T, K> {
   /**
    * Удаляет из хранилища записи с указанными ключами. Если метод вызывается без
    * указания ключей, тогда хранилище полностью очищается.
-   * @param keys
+   * @param key
    * @returns 
    */
-  public delete(...keys: K[]): Promise<DbOperationResult<K>[]> {
+  public delete(key?: K | K[]): Promise<DbOperationResult<K>[]> {
     if (!this.connection) {
       return Promise.reject(DbOperationResult.fail<T>(new Error("Хранилище не инициализировано.")))
     }
@@ -122,8 +136,14 @@ export class Storage<T, K> implements IStorage<T, K> {
       const [storage, tx] = this.getStorageRW();
       const deleteReport: DbOperationResult<K>[] = [];
       
-      if (keys.length > 0) {
-        keys.forEach(k => this.tryDelete(storage, k, deleteReport));
+      if (Array.isArray(key)) {
+        if (key.length === 0) {
+          const error = new Error("Не переданы ключи.");
+          return Promise.reject(DbOperationResult.fail<K>(error));
+        }
+        key.forEach(k => this.tryDelete(storage, k, deleteReport));
+      } else if (key) {
+        this.tryDelete(storage, key, deleteReport);
       } else {
         const deleteRequest = storage.clear();
         deleteRequest.onsuccess = () => {

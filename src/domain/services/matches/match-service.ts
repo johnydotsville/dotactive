@@ -23,6 +23,7 @@ export class MatchService {
     // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
     if (fromDb.length === 0) {
       const loaded = await this.loadMatchesForPlayer(playerAccountId);
+      debugger;
       const tmp = await this.storage.save(loaded);
       // this.matches = tmp.map(x => x.data);
       debugger
