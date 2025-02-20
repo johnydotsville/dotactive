@@ -9,10 +9,9 @@ export class Storage<T, K> implements IStorage<T, K> {
   protected connection?: IDBDatabase;
 
 
-  public constructor(database: MyDatabase, storageName: string, connection?: IDBDatabase) {
+  public constructor(database: MyDatabase, storageName: string) {
     this.database = database;
     this.storageName = storageName;
-    this.connection = connection;
   }
 
 
@@ -28,7 +27,7 @@ export class Storage<T, K> implements IStorage<T, K> {
       const error = new Error("Хранилище не инициализировано.");
       return Promise.reject(DbOperationResult.fail<T>(error));
     }
-    
+
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRW();
       const saveReport: DbOperationResult<T>[] = [];

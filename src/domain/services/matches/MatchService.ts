@@ -1,5 +1,5 @@
 import { stratzRequestConfig } from '@utils/stratz-request-config';
-import axios, {isCancel, AxiosError} from '../../../../node_modules/axios';
+import axios, {isCancel, AxiosError} from 'axios';
 // import axios, {isCancel, AxiosError} from 'axios';
 import { Match } from './model/match';
 import { MatchQueryBuilder} from './match-query-builder';
@@ -19,17 +19,20 @@ export class MatchService {
   }
 
   public async init(playerAccountId: number) {
-    const fromDb = await this.storage.read();
-    // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
-    if (fromDb.length === 0) {
-      const loaded = await this.loadMatchesForPlayer(playerAccountId);
-      debugger;
-      const tmp = await this.storage.save(loaded);
-      // this.matches = tmp.map(x => x.data);
-      debugger
-      // this.matches = await this.saveMatches(loaded);
-    } else {
-      // this.matches = fromDb.map(x => x.data);
+    await this.storage.init();
+    try {
+      const fromDb = await this.storage.read();
+      // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
+      if (fromDb.length === 0) {
+        const loaded = await this.loadMatchesForPlayer(playerAccountId);
+        const tmp = await this.storage.save(loaded);
+        // this.matches = tmp.map(x => x.data);
+        // this.matches = await this.saveMatches(loaded);
+      } else {
+        // this.matches = fromDb.map(x => x.data);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

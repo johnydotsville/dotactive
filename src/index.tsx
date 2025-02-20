@@ -5,7 +5,7 @@ import { defaultDbConfig } from './domain/database/config/defaultDbConfig';
 import { MyDatabase } from '@domain/database/MyDatabase';
 import { ConstantManager } from './domain/services/constants/constant-manager';
 import { PlayerService } from '@domain/services/player/player-service';
-import { MatchService } from '@domain/services/matches/match-service';
+import { MatchService } from '@domain/services/matches/MatchService';
 import { Match } from '@domain/services/matches/model/match';
 import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
 
@@ -16,10 +16,8 @@ async function prepare() {
 
   const accountId = 56831765;
 
-  const connection = await database.getConnection();
-
   // // const matchStorage = new MatchesStorage(connection, "matches");
-  const matchStorage = new MatchesStorage(database, "matches", connection);
+  const matchStorage = new MatchesStorage(database, "matches");
   // await matchStorage.init();
 
 
@@ -43,7 +41,6 @@ async function prepare() {
   fewMatches = await ms.getMatches(8146456949, 8148280087, 8166687583, 228);
   console.log(fewMatches);
 
-  debugger;
   const clearReport = await ms.deleteMatches();
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
