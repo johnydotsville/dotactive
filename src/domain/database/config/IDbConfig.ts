@@ -1,11 +1,15 @@
+import { StorageName } from "./storages/StorageName";
+
+
 export interface IDbConfig {
+  dbname: string;
   version: number;
-  name: string;
   storages: IStorageConfig[];
 }
 
 export interface IStorageConfig {
-  name: string;
+  storageName: StorageName;
+  oftype?: any,
   options?: IStorageOptions; 
   indexes?: IStorageIndex[]
 }
@@ -16,7 +20,7 @@ export interface IStorageOptions {
 }
 
 export interface IStorageIndex {
-  name: string
+  storageIndexName: string
   keyPath: string;
   options?: {
     unique: boolean;

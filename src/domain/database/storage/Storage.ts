@@ -1,7 +1,8 @@
 import { IStorage } from "./IStorage";
 import { DbOperationResult } from "@domain/database/DbOperationResult";
 
-
+// TODO: Переписать, чтобы в данных всегда был тип T. K там быть не должно.
+// если какие-то проблемы с ключом, то номер плохого ключа указывать в тексте ошибки.
 export class Storage<T, K> implements IStorage<T, K> {
   protected database: IDBDatabase;
   protected storageName: string;

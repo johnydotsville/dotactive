@@ -1,5 +1,7 @@
 import { IStorageConfig } from "../IDbConfig";
+import { StorageName } from "./StorageName";
+
 
 export const constantStorageConfig: IStorageConfig = {
-  name: "constants",
+  storageName: StorageName.Constants,
 };

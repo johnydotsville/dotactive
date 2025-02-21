@@ -5,14 +5,16 @@ import { Match } from './model/match';
 import { MatchQueryBuilder} from './match-query-builder';
 import { AxiosGraphqlQueryAdapter } from '@utils/axios-graphql-query-adapter';
 import { IStorage } from '@domain/database/storage/IStorage';
-import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
+import { MatchStorage } from '@domain/database/storage/MatchStorage';
+import { MyDatabase } from '@domain/database/MyDatabase';
+import { StorageName } from '@domain/database/config/storages/StorageName';
 
 export class MatchService {
   private requestConfig;
   private matches: Match[];
-  private storage: MatchesStorage;
+  private storage: MatchStorage;
 
-  public constructor(storage: MatchesStorage) {
+  public constructor(storage: MatchStorage) {
     this.requestConfig = stratzRequestConfig;
     this.storage = storage;
   }

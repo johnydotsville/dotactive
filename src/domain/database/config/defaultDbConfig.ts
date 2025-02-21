@@ -8,7 +8,7 @@ import { constantStorageConfig } from "./storages/constantStorageConfig";
  */
 export const defaultDbConfig: IDbConfig = {
   version: 1,
-  name: 'dotactive',
+  dbname: 'dotactive',
   storages: [
     matchStorageConfig,
     constantStorageConfig  

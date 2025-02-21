@@ -7,12 +7,23 @@ import { ConstantManager } from './domain/services/constants/constant-manager';
 import { PlayerService } from '@domain/services/player/player-service';
 import { MatchService } from '@domain/services/matches/MatchService';
 import { Match } from '@domain/services/matches/model/match';
-import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
+import { MatchStorage } from '@domain/database/storage/MatchStorage';
+import { StorageName } from '@domain/database/config/storages/StorageName';
+
 
 async function prepare() {
   const database = MyDatabase.getInstance();
   await database.init();
   const connection = database.getConnection();
+
+  const matchStorage = database.getStorage(StorageName.Matches) as MatchStorage;
+  const ms = new MatchService(matchStorage);
+
+  const accountId = 56831765;
+  await ms.init(accountId);
+
+  const allMatches = await ms.getAllMatches();
+  console.log(allMatches);
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(
