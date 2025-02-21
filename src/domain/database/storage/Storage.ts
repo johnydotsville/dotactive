@@ -1,33 +1,19 @@
-import { MyDatabase } from "@domain/database/MyDatabase";
 import { IStorage } from "./IStorage";
 import { DbOperationResult } from "@domain/database/DbOperationResult";
 
 
 export class Storage<T, K> implements IStorage<T, K> {
-  protected database: MyDatabase;
+  protected database: IDBDatabase;
   protected storageName: string;
-  protected connection?: IDBDatabase;
 
 
-  public constructor(database: MyDatabase, storageName: string) {
+  public constructor(database: IDBDatabase, storageName: string) {
     this.database = database;
     this.storageName = storageName;
   }
 
 
-  public async init(): Promise<void> {
-    if (!this.connection) {
-      this.connection = await this.database.getConnection();
-    }
-  }
-
-
   public save(data: T | T[]): Promise<DbOperationResult<T>[]> {
-    if (!this.connection) {
-      const error = new Error("Хранилище не инициализировано.");
-      return Promise.reject(DbOperationResult.fail<T>(error));
-    }
-
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRW();
       const saveReport: DbOperationResult<T>[] = [];
@@ -71,11 +57,8 @@ export class Storage<T, K> implements IStorage<T, K> {
    * @returns 
    */
   public read(key?: K | K[]): Promise<DbOperationResult<T | K>[]> {
-    if (!this.connection) {
-      const error = new Error("Хранилище не инициализировано.");
-      return Promise.reject(DbOperationResult.fail<T>(error))
-    }
-
+    // TODO: Переписать, чтобы в данных всегда был тип T. K там быть не должно.
+    // если какие-то проблемы с ключом, то номер плохого ключа указывать в тексте ошибки.
     return new Promise((resolve, reject) => {
       const [storage, tx] = this.getStorageRO();
       const readReport: DbOperationResult<T | K>[] = [];
@@ -135,11 +118,6 @@ export class Storage<T, K> implements IStorage<T, K> {
    * @returns 
    */
   public delete(key?: K | K[]): Promise<DbOperationResult<K>[]> {
-    if (!this.connection) {
-      const error = new Error("Хранилище не инициализировано.");
-      return Promise.reject(DbOperationResult.fail<T>(error))
-    }
-
     return new Promise(resolve => {
       const [storage, tx] = this.getStorageRW();
       const deleteReport: DbOperationResult<K>[] = [];
@@ -187,7 +165,7 @@ export class Storage<T, K> implements IStorage<T, K> {
 
   
   private getStorage(mode: IDBTransactionMode): [IDBObjectStore, IDBTransaction] {
-    const tx: IDBTransaction = this.connection.transaction(this.storageName, mode);
+    const tx: IDBTransaction = this.database.transaction(this.storageName, mode);
     return [tx.objectStore(this.storageName), tx];
   }
 

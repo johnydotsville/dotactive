@@ -10,18 +10,13 @@ import { Match } from '@domain/services/matches/model/match';
 import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
 
 async function prepare() {
-  const database = MyDatabase.create(defaultDbConfig);
-
-  const accountId = 56831765;
-
-  const matchStorage = new MatchesStorage(database, "matches");
-
-  const ms = new MatchService(matchStorage);
-  await ms.init(accountId);
+  const database = MyDatabase.getInstance();
+  await database.init();
+  const connection = database.getConnection();
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(
-    <App />
+    <App database={connection} />
   );
 }
 

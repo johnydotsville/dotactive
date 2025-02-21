@@ -1,6 +1,7 @@
 import { IDbConfig } from "./config/IDbConfig";
 import { IStorageConfig } from "./config/IDbConfig";
 import { IStorageIndex } from "./config/IDbConfig";
+import { defaultDbConfig } from "./config/defaultDbConfig";
 
 
 export class MyDatabase {
@@ -14,21 +15,19 @@ export class MyDatabase {
   }
 
 
-  public static create(config: IDbConfig): MyDatabase {
+  public static getInstance(): MyDatabase {
     if (!this.instance) {
-      this.instance = new MyDatabase(config);
+      this.instance = new MyDatabase(defaultDbConfig);
     }
     return this.instance;
   }
 
 
-  public getConnection(): Promise<IDBDatabase> {
+  public init(): Promise<IDBDatabase> {
+    if (this.connection) {
+      throw new Error("Нельзя повторно инициализировать БД, она уже инициализирована.");
+    };
     return new Promise((resolve, reject) => {
-      if (this.connection) {
-        console.log("База данных уже открыта.");
-        resolve(this.connection);
-        return;
-      };
       console.log("База данных не обнаружена. Создаю базу данных...");
       const openRequest: IDBOpenDBRequest = indexedDB.open(this.config.name, this.config.version);
 
@@ -47,6 +46,41 @@ export class MyDatabase {
       };
     })
   }
+
+
+  public getConnection(): IDBDatabase {
+    if (!this.connection) {
+      throw new Error("БД не инициализирована.");
+    }
+    return this.connection;
+  }
+
+
+  // public getConnection(): Promise<IDBDatabase> {
+  //   return new Promise((resolve, reject) => {
+  //     if (this.connection) {
+  //       console.log("База данных уже открыта.");
+  //       resolve(this.connection);
+  //       return;
+  //     };
+  //     console.log("База данных не обнаружена. Создаю базу данных...");
+  //     const openRequest: IDBOpenDBRequest = indexedDB.open(this.config.name, this.config.version);
+
+  //     openRequest.onupgradeneeded = () => {
+  //       const database: IDBDatabase = openRequest.result;
+  //       this.createStorages(database, this.config.storages);
+  //     };
+
+  //     openRequest.onsuccess = () => {
+  //       this.connection = openRequest.result;
+  //       resolve(this.connection);
+  //     };
+
+  //     openRequest.onerror = () => {
+  //       reject(openRequest.error);
+  //     };
+  //   })
+  // }
 
 
   // TODO: мб сделать еще метод для закрытия соединения?

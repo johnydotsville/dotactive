@@ -8,7 +8,6 @@ import { IStorage } from '@domain/database/storage/IStorage';
 import { MatchesStorage } from '@domain/database/storage/MatchesStorage';
 
 export class MatchService {
-  private database;
   private requestConfig;
   private matches: Match[];
   private storage: MatchesStorage;
@@ -19,17 +18,15 @@ export class MatchService {
   }
 
   public async init(playerAccountId: number) {
-    await this.storage.init();
     try {
       const fromDb = await this.storage.read();
-      // if (!fromDb) {  // Возвращался пустой массив в случае отсутствия данных. А раньше будто undefined было. Разобраться.
       if (fromDb.length === 0) {
         const loaded = await this.loadMatchesForPlayer(playerAccountId);
-        const tmp = await this.storage.save(loaded);
-        // this.matches = tmp.map(x => x.data);
+        const saved = await this.storage.save(loaded);
+        this.matches = saved.map(x => x.result);
         // this.matches = await this.saveMatches(loaded);
       } else {
-        // this.matches = fromDb.map(x => x.data);
+        // this.matches = fromDb.map(x => x.result);
       }
     } catch (error) {
       console.log(error);
@@ -47,11 +44,11 @@ export class MatchService {
     return response.data.data.player.matches.map(m => Match.create(m));
   }
 
-  private async saveMatches(matches: Match[]): Promise<Match[]> {
-    // return await this.database.saveMany(this.storage, matches);
-    const result = await this.database.save(this.storage, matches);
-    return result;
-  }
+  // private async saveMatches(matches: Match[]): Promise<Match[]> {
+  //   // return await this.database.saveMany(this.storage, matches);
+  //   const result = await this.database.save(this.storage, matches);
+  //   return result;
+  // }
 
   public async getAllMatches() {
     const result = await this.storage.read();

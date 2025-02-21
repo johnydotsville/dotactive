@@ -1,9 +1,8 @@
-import { MyDatabase } from "@domain/database/MyDatabase";
 import { Storage } from "./Storage";
 import { Match } from "@domain/services/matches/model/match";
 
 export class MatchesStorage extends Storage<Match, number> {
-  public constructor(database: MyDatabase, storageName: string) {
+  public constructor(database: IDBDatabase, storageName: string) {
     super(database, storageName);
   }
 }

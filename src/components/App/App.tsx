@@ -1,18 +1,22 @@
-import {useState} from 'react';
-import { useEffect } from "react";
+import React from 'react';
+import { createContext } from "react";
+
+
 import Matches from "@components/Matches/Matches";
 
-import * as classes from "./App.module.css";
-import spectre from "@assets/img/heroes/spectre.png";
+
+export const DatabaseContext = createContext(null);
 
 
-
-export const App = () => {
-
+export const App: React.FC<Props> = ({ database }) => {
   return (
-    <div>
-      Hello, world!
-      {/* <Matches /> */}
-    </div>
+    <DatabaseContext.Provider value={database}>
+      <Matches />
+    </DatabaseContext.Provider>
   )
+}
+
+
+type Props = {
+  database: IDBDatabase;
 }
