@@ -11,6 +11,6 @@ export const defaultDbConfig: IDbConfig = {
   dbname: 'dotactive',
   storages: [
     matchStorageConfig,
-    constantStorageConfig  
+    // constantStorageConfig  
   ]
 }

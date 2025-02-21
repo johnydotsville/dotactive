@@ -1,3 +1,4 @@
+import { IStorage } from "../storage/IStorage";
 import { StorageName } from "./storages/StorageName";
 
 
@@ -9,7 +10,7 @@ export interface IDbConfig {
 
 export interface IStorageConfig {
   storageName: StorageName;
-  oftype?: any,
+  oftype: new (a: IDBDatabase, b: string) => IStorage<any, any>;  // TODO: а это точно норм?
   options?: IStorageOptions; 
   indexes?: IStorageIndex[]
 }

@@ -83,7 +83,9 @@ export class MyDatabase {
   private createStorageInstances(connection: IDBDatabase) {
     this.storages = new Map();
     this.config.storages.forEach(s => {
-      this.storages.set(s.storageName, new s.oftype(s.storageName, connection));
+      if (s.oftype) {
+        this.storages.set(s.storageName, new s.oftype(connection, s.storageName));
+      }
     });
   }
 
