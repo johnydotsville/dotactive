@@ -16,7 +16,8 @@ async function prepare() {
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(
-    <App database={connection} />
+    // <App database={connection} />
+    <div>Hello, dotactive!</div>
   );
 }
 
