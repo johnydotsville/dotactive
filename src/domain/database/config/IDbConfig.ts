@@ -8,17 +8,20 @@ export interface IDbConfig {
   storages: IStorageConfig[];
 }
 
+
 export interface IStorageConfig {
   storageName: StorageName;
-  oftype: new (a: IDBDatabase, b: string) => IStorage<any, any>;  // TODO: а это точно норм?
+  oftype: new (a: IDBDatabase, b: string) => IStorage<any, any>;
   options?: IStorageOptions; 
   indexes?: IStorageIndex[]
 }
+
 
 export interface IStorageOptions {
   keyPath?: string;
   autoIncrement?: boolean;
 }
+
 
 export interface IStorageIndex {
   storageIndexName: string
