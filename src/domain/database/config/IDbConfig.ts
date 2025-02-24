@@ -5,13 +5,13 @@ import { StorageName } from "./storages/StorageName";
 export interface IDbConfig {
   dbname: string;
   version: number;
-  storages: IStorageConfig[];
+  storages: IStorageConfig<any, any>[];  // TODO: Здесь разве что можно union какой-то придумать из возможных типов данных
 }
 
 
-export interface IStorageConfig {
+export interface IStorageConfig<T, K> {
   storageName: StorageName;
-  oftype: new (a: IDBDatabase, b: string) => IStorage<any, any>;
+  oftype: new (database: IDBDatabase, storageName: string) => IStorage<T, K>;
   options?: IStorageOptions; 
   indexes?: IStorageIndex[]
 }

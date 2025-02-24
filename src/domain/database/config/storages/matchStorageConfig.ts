@@ -1,12 +1,10 @@
+import { Match } from "@domain/services/matches/model/match";
 import { IStorageConfig } from "../IDbConfig";
 import { StorageName } from "./StorageName";
 import { MatchStorage } from "@domain/database/storage/MatchStorage";
 
-// Сюда, возможно надо добавить еще тип данных, с которым будет работать хранилище.
-// Например, это хранилище - под матчи. Значит как-то сюда этот тип указать, чтобы
-// при создании экземпляров хранилища оно могло типизироваться этим типом.
 
-export const matchStorageConfig: IStorageConfig = {
+export const matchStorageConfig: IStorageConfig<Match, number> = {
   storageName: StorageName.Matches,
   oftype: MatchStorage,
   options: {

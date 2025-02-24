@@ -63,7 +63,7 @@ export class MyDatabase {
   // TODO: мб сделать еще метод для закрытия соединения?
 
   
-  private createStorages(database: IDBDatabase, storages: IStorageConfig[]) {
+  private createStorages(database: IDBDatabase, storages: IStorageConfig<any, any>[]) {
     storages.forEach(s => {
       if (!database.objectStoreNames.contains(s.storageName)) {
         const storage: IDBObjectStore = database.createObjectStore(s.storageName, s?.options);
@@ -89,6 +89,7 @@ export class MyDatabase {
 
   
   public getStorage(storageName: StorageName) {
+    
     return this.storages.get(storageName);
   }
 }

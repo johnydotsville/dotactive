@@ -7,7 +7,6 @@ import { ConstantManager } from './domain/services/constants/constant-manager';
 import { PlayerService } from '@domain/services/player/player-service';
 import { MatchService } from '@domain/services/matches/MatchService';
 import { Match } from '@domain/services/matches/model/match';
-import { MatchStorage } from '@domain/database/storage/MatchStorage';
 import { StorageName } from '@domain/database/config/storages/StorageName';
 
 
@@ -16,7 +15,7 @@ async function prepare() {
   await database.init();
   const connection = database.getConnection();
 
-  const matchStorage = database.getStorage(StorageName.Matches) as MatchStorage;
+  const matchStorage = database.getStorage(StorageName.Matches);
   const ms = new MatchService(matchStorage);
 
   const accountId = 56831765;
