@@ -21,11 +21,11 @@ export class MatchService {
 
   public async init(playerAccountId: number) {
     try {
-      const fromDb = await this.storage.read();
+      const fromDb = (await this.storage.read()).result;
       if (fromDb.length === 0) {
         const loaded = await this.loadMatchesForPlayer(playerAccountId);
         const saved = await this.storage.save(loaded);
-        this.matches = saved.map(x => x.result);
+        this.matches = saved.result;
         // this.matches = await this.saveMatches(loaded);
       } else {
         // this.matches = fromDb.map(x => x.result);

@@ -1,8 +1,13 @@
+import { FakeModel } from "@domain/services/matches/model/FakeModel";
 import { IStorageConfig } from "../IDbConfig";
 import { StorageName } from "./StorageName";
+import { ConstantStorage } from "@domain/database/storage/ConstantStorage";
 
-// Здесь можно будет дописать только когда будет класс под это хранилище
-// export const constantStorageConfig: IStorageConfig = {
-export const constantStorageConfig = {
+
+export const constantStorageConfig: IStorageConfig<FakeModel, string> = {
   storageName: StorageName.Constants,
+  oftype: ConstantStorage,
+  options: {
+    keyPath: "id"
+  },
 };

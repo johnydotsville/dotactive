@@ -5,12 +5,13 @@ import { StorageName } from "./storages/StorageName";
 export interface IDbConfig {
   dbname: string;
   version: number;
-  storages: IStorageConfig<any, any>[];  // TODO: Здесь разве что можно union какой-то придумать из возможных типов данных
+  storages: IStorageConfig<unknown, unknown>[];
 }
 
 
 export interface IStorageConfig<T, K> {
   storageName: StorageName;
+  // TODO: а что если тут написать typeof Storage<T, K>
   oftype: new (database: IDBDatabase, storageName: string) => IStorage<T, K>;
   options?: IStorageOptions; 
   indexes?: IStorageIndex[]

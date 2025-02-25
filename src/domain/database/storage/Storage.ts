@@ -7,6 +7,7 @@ export class Storage<T, K> implements IStorage<T, K> {
   protected storageName: string;
 
 
+  // TODO: Мб здесь надо не string ставить, а enum StorageName?
   public constructor(database: IDBDatabase, storageName: string) {
     this.database = database;
     this.storageName = storageName;

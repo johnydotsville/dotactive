@@ -5,12 +5,15 @@ import { defaultDbConfig } from "./config/defaultDbConfig";
 import { IStorage } from "./storage/IStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
 
+import { MatchStorage } from "./storage/MatchStorage";
+import { ConstantStorage } from "./storage/ConstantStorage";
+
 
 export class MyDatabase {
+  private static instance: MyDatabase;
   private config: IDbConfig;
   private connection: IDBDatabase;
-  private static instance: MyDatabase;
-  private storages: Map<StorageName, IStorage<any, any>>;
+  private storages: Map<StorageName, IStorage<unknown, unknown>>;
 
   
   private constructor(config: IDbConfig) {
@@ -87,9 +90,17 @@ export class MyDatabase {
     });
   }
 
-  
-  public getStorage(storageName: StorageName) {
-    
-    return this.storages.get(storageName);
+  // тут надо как-то указать тип экземпляра
+  public getStorage<T extends StorageTypes>(storageName: StorageName): T  {
+    // const storageInstance = this.storages.get(storageName);
+    // type storageType = InstanceType<typeof storageInstance>;
+    // return this.storages.get(storageName) as storageType;
+    return this.storages.get(storageName) as T;
   }
 }
+
+
+// type StorageTypes = InstanceType<typeof MatchStorage> | 
+//                     InstanceType<typeof ConstantStorage>;
+
+type StorageTypes = MatchStorage | ConstantStorage;
