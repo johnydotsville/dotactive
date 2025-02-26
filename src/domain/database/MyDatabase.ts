@@ -6,6 +6,11 @@ import { IStorage } from "./storage/IStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
 
 
+// TODO: Можно придумать какой-нибудь класс StorageKeeper, который бы умел
+// делать так, как предложили в интернете решить проблему с getStorage.
+// Передать этот класс в БД и делегировать ему извлечение хранилища.
+
+
 export class MyDatabase {
   private static instance: MyDatabase;
   private config: IDbConfig;
