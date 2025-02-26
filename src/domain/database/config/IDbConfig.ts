@@ -11,7 +11,6 @@ export interface IDbConfig {
 
 export interface IStorageConfig<T, K> {
   storageName: StorageName;
-  // TODO: а что если тут написать typeof Storage<T, K>
   oftype: new (database: IDBDatabase, storageName: string) => IStorage<T, K>;
   options?: IStorageOptions; 
   indexes?: IStorageIndex[]

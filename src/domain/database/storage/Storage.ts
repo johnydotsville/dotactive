@@ -1,14 +1,14 @@
+import { StorageName } from "../config/storages/StorageName";
 import { IStorage } from "./IStorage";
 import { DbOperationResult } from "@domain/database/DbOperationResult";
 
 
-export class Storage<T, K> implements IStorage<T, K> {
+export abstract class Storage<T, K> implements IStorage<T, K> {
   protected database: IDBDatabase;
   protected storageName: string;
 
 
-  // TODO: Мб здесь надо не string ставить, а enum StorageName?
-  public constructor(database: IDBDatabase, storageName: string) {
+  public constructor(database: IDBDatabase, storageName: StorageName) {
     this.database = database;
     this.storageName = storageName;
   }

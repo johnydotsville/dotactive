@@ -17,6 +17,7 @@ async function prepare() {
   const connection = database.getConnection();
 
   const matchStorage = database.getStorage<MatchStorage>(StorageName.Matches);
+  // const matchStorage = database.getStorage(StorageName.Matches);
   const ms = new MatchService(matchStorage);
 
   const accountId = 56831765;

@@ -5,9 +5,6 @@ import { defaultDbConfig } from "./config/defaultDbConfig";
 import { IStorage } from "./storage/IStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
 
-import { MatchStorage } from "./storage/MatchStorage";
-import { ConstantStorage } from "./storage/ConstantStorage";
-
 
 export class MyDatabase {
   private static instance: MyDatabase;
@@ -90,17 +87,187 @@ export class MyDatabase {
     });
   }
 
-  // тут надо как-то указать тип экземпляра
-  public getStorage<T extends StorageTypes>(storageName: StorageName): T  {
-    // const storageInstance = this.storages.get(storageName);
-    // type storageType = InstanceType<typeof storageInstance>;
-    // return this.storages.get(storageName) as storageType;
+
+  public getStorage<T>(storageName: StorageName): T  {
     return this.storages.get(storageName) as T;
   }
 }
 
 
-// type StorageTypes = InstanceType<typeof MatchStorage> | 
-//                     InstanceType<typeof ConstantStorage>;
 
-type StorageTypes = MatchStorage | ConstantStorage;
+/*
+Альтернативные варианты, как можно сделать метод getStorage, чтобы он проверял типы.
+
+// ======================= Вариант 1
+
+type DbOperationResult<T> = {preved: T};
+
+interface IStorage<T, K> {
+  save(data: T | T[]): Promise<DbOperationResult<T>[]>;
+  medved: K;
+}
+
+interface IStorageConfig<T, K> {
+    oftype: new (database: IDBDatabase, storageName: string) => IStorage<T, K>;
+}
+
+
+
+
+
+// --------------- использование --------------------
+type Match = {a: number};
+type Match2 = {b: string};
+
+class MatchStorage implements IStorage<Match, number> {
+  public constructor(database: IDBDatabase, storageName: string) {}
+  medved = 1;
+  save() {return 1 as never}
+}
+
+class Match2Storage implements IStorage<Match2, string> {
+  public constructor(database: IDBDatabase, storageName: string) {}
+  medved = '';
+  save() {return 1 as never}
+}
+
+enum StorageName {
+    Matches = 'Matches',
+    Matches2 = 'Matches2'
+}
+
+const matchStorageConfig: IStorageConfig<Match, number> = {
+    oftype: MatchStorage
+}
+
+const match2StorageConfig: IStorageConfig<Match2, string> = {
+    oftype: Match2Storage
+}
+
+
+// сводный конфиг по всем
+const fullConfig = {
+    [StorageName.Matches]: matchStorageConfig,
+    [StorageName.Matches2]: match2StorageConfig
+} satisfies Record<StorageName, IStorageConfig<unknown, unknown>>;
+
+type GetStorageType<N extends StorageName> = InstanceType<typeof fullConfig[N]['oftype']>;
+
+// теперь не генерик, но знает обо всех типах стораджей
+class Database {
+    constructor(private db: IDBDatabase) {}
+
+    getStorage<N extends StorageName>(name: N): GetStorageType<N> {
+        const c = fullConfig[name];
+
+        return new c.oftype(this.db, name) as GetStorageType<N>;
+    }
+}
+
+declare const db: IDBDatabase;
+
+// экземпляр
+const database = new Database(db);
+
+
+
+
+// ------------ использование database ------------
+const matchStorage = database.getStorage(StorageName.Matches);
+
+const x = matchStorage.save({a: 1});
+//    ^?
+
+
+const match2Storage = database.getStorage(StorageName.Matches2);
+
+const y = match2Storage.save({b: ''});
+//    ^?
+
+
+// ======================= Вариант 2, с дженериками на самой БД
+
+type FakeIDBDatabase = { }
+
+type DbOperationResult<T> = {preved: T};
+
+interface IStorage<T, K> {
+  save(data: T | T[]): Promise<DbOperationResult<T>[]>;
+  medved: K;
+}
+
+interface IStorageConfig<T, K> {
+    oftype: new (database: FakeIDBDatabase, storageName: string) => IStorage<T, K>;
+}
+
+class Database<M extends Record<string, IStorageConfig<unknown, unknown>>> {
+    constructor(private cfg: M, private db: FakeIDBDatabase) {}
+
+    getStorage<N extends string & keyof M>(name: N): InstanceType<M[N]['oftype']> {
+        const c = this.cfg[name];
+
+        return new c.oftype(this.db, name) as InstanceType<M[N]['oftype']>;
+    }
+}
+
+
+
+// --------------- использование --------------------
+type Match = {a: number};
+type Match2 = {b: string};
+
+class MatchStorage implements IStorage<Match, number> {
+  public constructor(database: FakeIDBDatabase, storageName: string) {}
+  medved = 1;
+  save() {return 1 as never}
+}
+
+class Match2Storage implements IStorage<Match2, string> {
+  public constructor(database: FakeIDBDatabase, storageName: string) {}
+  medved = '';
+  save() {return 1 as never}
+}
+
+enum StorageName {
+    Matches = 'Matches',
+    Matches2 = 'Matches2'
+}
+
+const matchStorageConfig: IStorageConfig<Match, number> = {
+    oftype: MatchStorage
+}
+
+const match2StorageConfig: IStorageConfig<Match2, string> = {
+    oftype: Match2Storage
+}
+
+
+
+// ***********************************
+// создаем Database со всеми конфигами
+// ***********************************
+// declare const db: IDBDatabase;
+let db: FakeIDBDatabase = { };
+
+const database = new Database({
+    [StorageName.Matches]: matchStorageConfig,
+    [StorageName.Matches2]: match2StorageConfig
+}, db);
+
+
+
+
+// ------------ использование database ------------
+const matchStorage = database.getStorage(StorageName.Matches);
+
+const x = matchStorage.save({a: 1});
+//    ^?
+
+
+const match2Storage = database.getStorage(StorageName.Matches2);
+
+const y = match2Storage.save({b: ''});
+//    ^?
+
+
+*/
