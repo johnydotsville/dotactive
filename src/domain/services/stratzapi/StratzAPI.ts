@@ -1,8 +1,12 @@
 import { stratzRequestConfig } from '@utils/stratz-request-config';
 import { MatchQueryBuilder } from './querymodel/MatchQueryBuilder';
-import { AxiosGraphqlQueryAdapter } from '@utils/axios-graphql-query-adapter';
+import { AxiosGraphqlQueryAdapter } from '@utils/AxiosGraphqlQueryAdapter';
 import axios, {isCancel, AxiosError} from 'axios';
-import { Match } from './datamodel/match';
+import { Match } from '@domain/services/stratzapi/datamodel/Match';
+
+
+// TODO: возможно надо будет сделать более специализированные классы, вроде MatchAPI
+// и объединить их здесь.
 
 
 export class StratzAPI {

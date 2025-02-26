@@ -1,4 +1,4 @@
-import { Match } from '@domain/services//stratzapi/datamodel/match';
+import { Match } from '@domain/services/stratzapi/datamodel/Match';
 import { MatchStorage } from '@domain/database/storage/MatchStorage';
 import { StratzAPI } from '@domain/services/stratzapi/StratzAPI';
 

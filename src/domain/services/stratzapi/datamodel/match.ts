@@ -1,4 +1,4 @@
-import { MatchPlayer } from "./match-player";
+import { MatchPlayer } from "@domain/services/stratzapi/datamodel/MatchPlayer";
 
 export class Match {
   id: number;
