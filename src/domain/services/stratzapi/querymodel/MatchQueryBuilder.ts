@@ -7,11 +7,14 @@ export class MatchQueryBuilder {
   private requestParams: any;
   private singleParams: any;
 
+
   constructor() {
     this.query = queryTemplate;  // TODO: Так нормально делать? Или все же лучше отдельно в клиенте импортировать шаблон и передавать его через конструктор?
+    // TODO: Тут скорее нужна мапа, а не массив, чтобы если вызывают несколько раз метод установки параметра, то новый вызов перезаписывал старое значение.
     this.requestParams = [];
     this.singleParams = [];
   }
+
 
   account(account) {
     this.singleParams.push({
@@ -21,6 +24,7 @@ export class MatchQueryBuilder {
     return this;
   }
 
+
   take(count) {
     this.requestParams.push({
       name: "take",
@@ -28,6 +32,7 @@ export class MatchQueryBuilder {
     });
     return this;
   }
+
 
   startDateTime(dateTime) {
     this.requestParams.push({
@@ -37,6 +42,7 @@ export class MatchQueryBuilder {
     return this;
   }
 
+
   endDateTime(dateTime) {
     this.requestParams.push({
       name: "endDateTime",
@@ -45,9 +51,11 @@ export class MatchQueryBuilder {
     return this;
   }
 
+
   replaceSingleParams() {
     this.query = this.singleParams.reduce((qt, p) => qt.replace(`#${p.name}#`, p.value), this.query);
   }
+
 
   replaceComplexParams() {
     const requestParamsUnited = this.requestParams
@@ -56,6 +64,7 @@ export class MatchQueryBuilder {
 
     this.query = this.query.replace("#requestParams#", requestParamsUnited)
   }
+
 
   build() {
     this.replaceSingleParams();

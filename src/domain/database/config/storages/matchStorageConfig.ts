@@ -1,4 +1,4 @@
-import { Match } from "@domain/services/matches/model/match";
+import { Match } from "@domain/services/stratzapi/datamodel/match";
 import { IStorageConfig } from "../IDbConfig";
 import { StorageName } from "./StorageName";
 import { MatchStorage } from "@domain/database/storage/MatchStorage";

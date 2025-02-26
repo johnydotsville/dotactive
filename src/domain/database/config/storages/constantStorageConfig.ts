@@ -1,4 +1,4 @@
-import { FakeModel } from "@domain/services/matches/model/FakeModel";
+import { FakeModel } from "@domain/services/stratzapi/datamodel/FakeModel";
 import { IStorageConfig } from "../IDbConfig";
 import { StorageName } from "./StorageName";
 import { ConstantStorage } from "@domain/database/storage/ConstantStorage";

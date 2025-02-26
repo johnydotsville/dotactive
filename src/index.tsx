@@ -6,9 +6,10 @@ import { MyDatabase } from '@domain/database/MyDatabase';
 import { ConstantManager } from './domain/services/constants/constant-manager';
 import { PlayerService } from '@domain/services/player/player-service';
 import { MatchService } from '@domain/services/matches/MatchService';
-import { Match } from '@domain/services/matches/model/match';
+import { Match } from '@domain/services/stratzapi/datamodel/match';
 import { StorageName } from '@domain/database/config/storages/StorageName';
 import { MatchStorage } from '@domain/database/storage/MatchStorage';
+import { StratzAPI } from '@domain/services/stratzapi/StratzAPI';
 
 
 async function prepare() {
@@ -18,7 +19,8 @@ async function prepare() {
 
   const matchStorage = database.getStorage<MatchStorage>(StorageName.Matches);
   // const matchStorage = database.getStorage(StorageName.Matches);
-  const ms = new MatchService(matchStorage);
+  const api = new StratzAPI();
+  const ms = new MatchService(matchStorage, api);
 
   const accountId = 56831765;
   await ms.init(accountId);
