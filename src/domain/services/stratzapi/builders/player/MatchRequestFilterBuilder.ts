@@ -1,4 +1,4 @@
-import { FilterBuilder } from "../FilterBuilder";
+import { FilterBuilder } from "../utils/ParamsBag";
 
 
 export class MatchRequestFilterBuilder extends FilterBuilder {
@@ -31,7 +31,6 @@ export class MatchRequestFilterBuilder extends FilterBuilder {
   // before: number;
   // matchIds: number[];
   // startDateTime: number;
-  // endDateTime: number;
   // lobbyTypeIds: number[];
  Еще некоторые поля, с которыми можно будет потом придумать что-нибудь интересное (возможно):
   // orderBy: ???;

@@ -1,77 +1,93 @@
+import { ParamsBag } from "../builders/utils/ParamsBag";
+import { ParamType as Param } from "../builders/utils/ParamsBag";
+
 /**
  * Построитель запроса выборки матчей игрока. Содержит методы установки
  * параметров для шаблона запроса и метод генерации строки запроса.
  */
 export class MatchQueryBuilder {
   private query: string;
-  private requestParams: any;
-  private singleParams: any;
+  private bag: ParamsBag;
 
 
   constructor() {
-    this.query = queryTemplate;  // TODO: Так нормально делать? Или все же лучше отдельно в клиенте импортировать шаблон и передавать его через конструктор?
-    // TODO: Тут скорее нужна мапа, а не массив, чтобы если вызывают несколько раз метод установки параметра, то новый вызов перезаписывал старое значение.
-    this.requestParams = [];
-    this.singleParams = [];
+    this.query = queryTemplate;
+    this.bag = new ParamsBag();
   }
 
 
-  account(account) {
-    this.singleParams.push({
-      name: "playerAccountId",
-      value: account
-    });
+  public account(account: number): MatchQueryBuilder {
+    this.bag.put(new Param("steamAccountId", account, ParamGroup.PlayerAccountId));
     return this;
   }
 
 
-  take(count) {
-    this.requestParams.push({
-      name: "take",
-      value: count
-    });
+  public take(matchesCount: number): MatchQueryBuilder {
+    this.bag.put(new Param("take", matchesCount, ParamGroup.MatchFilter));
     return this;
   }
 
 
-  startDateTime(dateTime) {
-    this.requestParams.push({
-      name: "startDateTime",
-      value: dateTime
-    });
+  public skip(matchesCount: number): MatchQueryBuilder {
+    this.bag.put(new Param("skip", matchesCount, ParamGroup.MatchFilter));
     return this;
   }
 
 
-  endDateTime(dateTime) {
-    this.requestParams.push({
-      name: "endDateTime",
-      value: dateTime
-    });
+  public before(matchId: number): MatchQueryBuilder {
+    this.bag.put(new Param("before", matchId, ParamGroup.MatchFilter));
     return this;
   }
 
 
-  replaceSingleParams() {
-    this.query = this.singleParams.reduce((qt, p) => qt.replace(`#${p.name}#`, p.value), this.query);
+  public after(matchId: number): MatchQueryBuilder {
+    this.bag.put(new Param("after", matchId, ParamGroup.MatchFilter));
+    return this;
   }
 
 
-  replaceComplexParams() {
-    const requestParamsUnited = this.requestParams
-      .map(p => `${p.name}: ${p.value}`)
-      .join(", ");
-
-    this.query = this.query.replace("#requestParams#", requestParamsUnited)
+  public startDateTime(dateTimeUnix: number): MatchQueryBuilder {
+    this.bag.put(new Param("startDateTime", dateTimeUnix, ParamGroup.MatchFilter));
+    return this;
   }
 
+
+  // replaceSingleParams() {
+  //   this.query = this.singleParams.reduce((qt, p) => qt.replace(`#${p.name}#`, p.value), this.query);
+  // }
+
+
+  // replaceComplexParams() {
+  //   this.query = this.query.replace("#requestParams#", this.paramsBuilder.build());
+  // }
+
+
+  // build() {
+  //   const groups = this.bag.getAllGroupped();
+  //   const query = groups.reduce((q, cur) => {
+  //       q.replace(`#{q[0]}#`)
+  //       return q;
+  //     }, this.query);
+  //   return query;
+  // }
 
   build() {
-    this.replaceSingleParams();
-    this.replaceComplexParams();
-    return this.query;
+    const groups = this.bag.getAllGroupped();
+    const query = this.query;
+    for (let [group, params] of Object.entries(groups)) {
+      const value = params.length > 1 ? params.map(p => p.value).join(",") : params[0].value;
+      query.replace(`#${group}#`, value);
+    }
+    return query;
   }
 }
+
+
+enum ParamGroup {
+  MatchFilter = "match_filter",
+  PlayerAccountId = "player_account_id"
+}
+
 
 /**
  * Шаблон для запроса выбора матчей игрока. Содержит набор полей,
@@ -80,10 +96,10 @@ export class MatchQueryBuilder {
  */
 const queryTemplate = `
   {
-    player(steamAccountId: #playerAccountId#) {
+    player(#${ParamGroup.PlayerAccountId}#) {
       steamAccountId,
       matches(request: {
-        #requestParams#
+        #${ParamGroup.MatchFilter}#
       }) {
         id
         startDateTime
@@ -126,14 +142,35 @@ const queryTemplate = `
   }
 `;
 
+
+/*
+  {
+    name: "playerAccountId",
+    value: 56834215,
+    group: null
+  },
+  {
+    name: "skip",
+    value: 10,
+    group "matchFilter"
+  },
+  {
+    name: "take",
+    value: 2,
+    group "matchFilter"
+  }
+*/
+
+
 /*
 Пример как может выглядеть конечный запрос
 operationName: "getMatchInfo",
       query: `query getMatchInfo
         {
-          player(steamAccountId: ${playerAccountId}) {
+          player(steamAccountId: 56834215) {
             steamAccountId,
             matches(request: {
+              skip: 100,
               take: 20
             }) {
               id
@@ -189,4 +226,25 @@ console.log(builder
   .endDateTime(3)
   .take(25)
   .build());
+*/
+
+
+
+
+/*
+ Основные на данный момент поля фильтров матчей:
+  // take: number;
+  // skip: number;
+  // after: number;
+  // before: number;
+  // matchIds: number[];
+  // startDateTime: number;
+  // lobbyTypeIds: number[];
+ Еще некоторые поля, с которыми можно будет потом придумать что-нибудь интересное (возможно):
+  // orderBy: ???;
+  // heroIds: number[];
+  // roleIds: number[];
+  // positionIds: number[];
+  // isVictory: boolean;
+  // isRadiant: boolean;
 */

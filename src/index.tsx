@@ -14,24 +14,13 @@ import { StratzAPI } from '@domain/services/stratzapi/StratzAPI';
 import { MatchRequestFilterBuilder } from '@domain/services/stratzapi/builders/player/MatchRequestFilterBuilder';
 import { MatchRequestDataStructureBuilder } from '@domain/services/stratzapi/builders/player/MatchRequestDataStructureBuilder';
 import { MatchRequestBuilder } from '@domain/services/stratzapi/builders/player/MatchRequestBuilder';
+import { MatchQueryBuilder } from '@domain/services/stratzapi/querymodel/MatchQueryBuilder';
 
 
 async function prepare() {
 
-  const fb = new MatchRequestFilterBuilder();
-  const sb = new MatchRequestDataStructureBuilder();
-
-  const filters = fb.skip(100).take(10).build();
-  const datas = sb.id().lobbyType().startDateTime().build();
-
-  console.log(filters);
-  console.log(datas);
-
-  const mb = new MatchRequestBuilder(fb, sb);
-  mb.filter.skip(10).take(2);
-  mb.data.id().lobbyType().startDateTime;
-  mb.filter.take(7);
-  const result = mb.build();
+  const mb = new MatchQueryBuilder();
+  const result = mb.account(2281337).skip(10).take(2).build();
 
   console.log(result);
 
