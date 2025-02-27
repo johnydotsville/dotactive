@@ -1,5 +1,5 @@
 import { stratzRequestConfig } from '@utils/stratz-request-config';
-import { MatchQueryBuilder } from './querymodel/MatchQueryBuilder';
+import { MatchQueryBuilder } from './builders/MatchQueryBuilder';
 import { AxiosGraphqlQueryAdapter } from '@utils/AxiosGraphqlQueryAdapter';
 import axios, {isCancel, AxiosError} from 'axios';
 import { Match } from '@domain/services/stratzapi/datamodel/Match';

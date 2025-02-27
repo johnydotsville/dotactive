@@ -11,10 +11,7 @@ import { StorageName } from '@domain/database/config/storages/StorageName';
 import { MatchStorage } from '@domain/database/storage/MatchStorage';
 import { StratzAPI } from '@domain/services/stratzapi/StratzAPI';
 
-import { MatchRequestFilterBuilder } from '@domain/services/stratzapi/builders/player/MatchRequestFilterBuilder';
-import { MatchRequestDataStructureBuilder } from '@domain/services/stratzapi/builders/player/MatchRequestDataStructureBuilder';
-import { MatchRequestBuilder } from '@domain/services/stratzapi/builders/player/MatchRequestBuilder';
-import { MatchQueryBuilder } from '@domain/services/stratzapi/querymodel/MatchQueryBuilder';
+import { MatchQueryBuilder } from '@domain/services/stratzapi/builders/MatchQueryBuilder';
 
 
 async function prepare() {

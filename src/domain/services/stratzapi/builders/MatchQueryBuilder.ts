@@ -1,5 +1,5 @@
-import { ParamsBag } from "../builders/utils/ParamsBag";
-import { ParamType as Param } from "../builders/utils/ParamsBag";
+import { ParamsBag } from "./utils/ParamsBag";
+import { ParamType as Param } from "./utils/ParamsBag";
 
 /**
  * Построитель запроса выборки матчей игрока. Содержит методы установки
@@ -50,33 +50,16 @@ export class MatchQueryBuilder {
     this.bag.put(new Param("startDateTime", dateTimeUnix, ParamGroup.MatchFilter));
     return this;
   }
-
-
-  // replaceSingleParams() {
-  //   this.query = this.singleParams.reduce((qt, p) => qt.replace(`#${p.name}#`, p.value), this.query);
-  // }
-
-
-  // replaceComplexParams() {
-  //   this.query = this.query.replace("#requestParams#", this.paramsBuilder.build());
-  // }
-
-
-  // build() {
-  //   const groups = this.bag.getAllGroupped();
-  //   const query = groups.reduce((q, cur) => {
-  //       q.replace(`#{q[0]}#`)
-  //       return q;
-  //     }, this.query);
-  //   return query;
-  // }
+  
 
   build() {
     const groups = this.bag.getAllGroupped();
-    const query = this.query;
+    let query = this.query;
     for (let [group, params] of Object.entries(groups)) {
-      const value = params.length > 1 ? params.map(p => p.value).join(",") : params[0].value;
-      query.replace(`#${group}#`, value);
+      const value = params.length > 1 ? 
+        params.map(p => `${p.name}:${p.value}`).join(",") : 
+        `${params[0].name}:${params[0].value}`;
+      query = query.replace(`#${group}#`, value);
     }
     return query;
   }
@@ -141,25 +124,6 @@ const queryTemplate = `
     }
   }
 `;
-
-
-/*
-  {
-    name: "playerAccountId",
-    value: 56834215,
-    group: null
-  },
-  {
-    name: "skip",
-    value: 10,
-    group "matchFilter"
-  },
-  {
-    name: "take",
-    value: 2,
-    group "matchFilter"
-  }
-*/
 
 
 /*
