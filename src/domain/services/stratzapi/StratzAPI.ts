@@ -16,14 +16,27 @@ export class StratzAPI {
     this.requestConfig = stratzRequestConfig;
   }
 
-  public async getMatchesByPlayerId(playerAccountId: number) {
+  public async getMatchesByPlayerId(playerAccountId: number, matchesCount?: number): Promise<Match[]> {
+    let result: Match[] = [];
     const builder = new MatchQueryBuilder();
-    builder.account(playerAccountId).take(50);
-    const matchQuery = AxiosGraphqlQueryAdapter.toAxiosQuery(builder.build(), "getMatchInfo");
+    const maxMatchesPerRequest = 100;
+    const matchesToFetch = matchesCount ?? 1000;
 
-    this.requestConfig.data = matchQuery;
-    const response = await axios.request(this.requestConfig);
+    const cycles = Math.ceil(matchesToFetch / maxMatchesPerRequest);
 
-    return response.data.data.player.matches.map(m => Match.create(m));
+    builder.account(playerAccountId).take(100);
+
+    for (let i = 0; i < cycles; i++) {
+      builder.skip(i * maxMatchesPerRequest);
+      const matchQuery = AxiosGraphqlQueryAdapter.toAxiosQuery(builder.build(), "getMatchInfo");
+
+      this.requestConfig.data = matchQuery;
+      const response = await axios.request(this.requestConfig);
+
+      const pack = response.data.data.player.matches.map(m => Match.create(m));
+      result = result.concat(pack);
+    }
+
+    return result;
   }
 }

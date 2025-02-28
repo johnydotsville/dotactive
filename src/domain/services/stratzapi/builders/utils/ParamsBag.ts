@@ -1,26 +1,26 @@
 // TODO: написать юнит-тест для этого класса
 export class ParamsBag {
-  private params: Set<ParamType>;
+  private params: Map<string, ParamType>;
 
 
   public constructor() {
-    this.params = new Set();
+    this.params = new Map();
   }
 
   
   public put(param: ParamType): void {
-    this.params.add(param);
+    this.params.set(param.name, param);
   }
 
 
   public getAll(): ParamType[] {
-    return Array.from(this.params);
+    return Array.from(this.params.values());
   }
 
 
   public getAllGroupped(): Record<string, ParamType[]> {
     const groupsObj = Array
-      .from(this.params)
+      .from(this.params.values())
       .reduce((acc, p) => {
           if (!acc[p.group]) {
             acc[p.group] = [];

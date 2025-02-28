@@ -17,7 +17,8 @@ export class MatchService {
     try {
       const fromDb = (await this.storage.read()).result;
       if (fromDb.length === 0) {
-        const loaded = await this.loadMatchesForPlayer(playerAccountId);
+        console.log("В БД матчей нет, загружаю их с сервера...");
+        const loaded = await this.api.getMatchesByPlayerId(playerAccountId, 1000);
         const saved = await this.storage.save(loaded);
         this.matches = saved.result;
       } else {
@@ -26,11 +27,6 @@ export class MatchService {
     } catch (error) {
       console.log(error);
     }
-  }
-
-
-  private async loadMatchesForPlayer(playerAccountId: number) {
-    return await this.api.getMatchesByPlayerId(playerAccountId);
   }
 
 

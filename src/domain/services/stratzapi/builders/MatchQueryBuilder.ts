@@ -1,6 +1,10 @@
 import { ParamsBag } from "./utils/ParamsBag";
 import { ParamType as Param } from "./utils/ParamsBag";
 
+// TODO: можно сделать базовый класс с методом build и настройкой ParamsBag,
+// а потомкам останется только задать шаблон и реализовать методы добавления
+// параметров
+
 /**
  * Построитель запроса выборки матчей игрока. Содержит методы установки
  * параметров для шаблона запроса и метод генерации строки запроса.
@@ -22,6 +26,7 @@ export class MatchQueryBuilder {
   }
 
 
+  // Максимум сервер отдает 100 записей за раз
   public take(matchesCount: number): MatchQueryBuilder {
     this.bag.put(new Param("take", matchesCount, ParamGroup.MatchFilter));
     return this;

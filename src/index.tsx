@@ -16,25 +16,26 @@ import { MatchQueryBuilder } from '@domain/services/stratzapi/builders/MatchQuer
 
 async function prepare() {
 
-  const mb = new MatchQueryBuilder();
-  const result = mb.account(2281337).skip(10).take(2).build();
+  // const builder = new MatchQueryBuilder();
+  // let q = builder.account(1235341234).take(100).skip(0).build();
+  // console.log(q);
+  // q = builder.skip(100).build();
+  // console.log(q);
 
-  console.log(result);
+  const database = MyDatabase.getInstance();
+  await database.init();
+  const connection = database.getConnection();
 
-  // const database = MyDatabase.getInstance();
-  // await database.init();
-  // const connection = database.getConnection();
+  const matchStorage = database.getStorage<MatchStorage>(StorageName.Matches);
+  // const matchStorage = database.getStorage(StorageName.Matches);
+  const api = new StratzAPI();
+  const ms = new MatchService(matchStorage, api);
 
-  // const matchStorage = database.getStorage<MatchStorage>(StorageName.Matches);
-  // // const matchStorage = database.getStorage(StorageName.Matches);
-  // const api = new StratzAPI();
-  // const ms = new MatchService(matchStorage, api);
+  const accountId = 56831765;
+  await ms.init(accountId);
 
-  // const accountId = 56831765;
-  // await ms.init(accountId);
-
-  // const allMatches = await ms.getAllMatches();
-  // console.log(allMatches);
+  const allMatches = await ms.getAllMatches();
+  console.log(allMatches);
 
 
 
