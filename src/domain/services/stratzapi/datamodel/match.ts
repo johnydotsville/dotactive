@@ -4,12 +4,12 @@ export class Match {
   id: number;
   radiantScore: number;
   direScore: number;
-  startDateTime
-  durationSeconds
-  lobbyType
-  didRadiantWin
-  radiantKills
-  direKills
+  startDateTime: number;
+  durationSeconds: number;
+  lobbyType: string;
+  didRadiantWin: boolean;
+  radiantKills: number;
+  direKills: number;
   gameMode
   bracket
   matchPlayers: MatchPlayer[];

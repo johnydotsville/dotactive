@@ -36,10 +36,10 @@ export class MyDatabase {
       throw new Error("Нельзя повторно инициализировать БД, она уже инициализирована.");
     };
     return new Promise((resolve, reject) => {
-      console.log("База данных не обнаружена. Создаю базу данных...");
       const openRequest: IDBOpenDBRequest = indexedDB.open(this.config.dbname, this.config.version);
 
       openRequest.onupgradeneeded = () => {
+      console.log("База данных не обнаружена или требует обновления.");
         const database: IDBDatabase = openRequest.result;
         this.createStorages(database, this.config.storages);
       };

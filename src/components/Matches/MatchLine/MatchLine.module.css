@@ -1,0 +1,42 @@
+.matchLine {
+  display: flex;
+}
+
+
+.playerHero {
+  width: 100px;
+}
+
+.playerHeroImg {
+  width: 100%;
+}
+
+
+.playerPosition {
+  background-color: blue;
+  width: 50px;
+}
+
+.playerPositionImg {
+  width: 100%;
+}
+
+
+.playerStat {
+  border: 1px solid red;
+}
+
+
+.suspMatch {
+  width: 50px;
+}
+
+.suspMatchImg {
+  width: 100%;
+}
+
+
+.miscMatchInfo {
+  display: flex;
+  flex-direction: column;
+}

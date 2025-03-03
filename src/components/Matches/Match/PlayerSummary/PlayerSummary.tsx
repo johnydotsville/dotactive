@@ -23,7 +23,7 @@ function getPortrait(heroname) {
 
 function getInfo(stats) {
   const arr = Object.entries(stats).map(([k, v]) => `${k}: ${v}`);
-  arr.forEach(x => console.log(x));
+  // arr.forEach(x => console.log(x));
   return (
     <div className={styles.brief}>
       { arr.map(x => <div>{x}</div>) }

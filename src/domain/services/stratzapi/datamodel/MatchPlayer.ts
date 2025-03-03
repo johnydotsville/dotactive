@@ -8,8 +8,8 @@ export class MatchPlayer {
   heroId
   heroDisplayName
   heroShortName
-  isRadiant
-  isVictory
+  isRadiant: boolean;
+  isVictory: boolean;
   kills
   deaths
   assists

@@ -3,8 +3,14 @@ import MatchBasicInfo from "./MatchBasicInfo/MatchBasicInfo";
 import PlayerSummary from "./PlayerSummary/PlayerSummary";
 import TeamInfo, { PlayerStats } from "./TeamInfo/TeamInfo";
 import { TeamStats } from "./TeamInfo/TeamInfo";
+import { Match as MatchModel } from "@domain/services/stratzapi/datamodel/Match";
+import { MatchPlayer } from "@domain/services/stratzapi/datamodel/MatchPlayer";
 
-export default function Match({match}) {
+type Props = {
+  match: MatchModel
+}
+
+export const Match: React.FC<Props> = ({ match }) => {
   const matchBasicInfo = {
     matchId: match.id,
     lobbyType: match.lobbyType,
@@ -12,48 +18,48 @@ export default function Match({match}) {
     duration: match.durationSeconds,
   };
 
-  const playerAccountId = 56831765;  // TODO: переделать, чтобы бралось из редакса или типа того
+  const myAccountId = 56831765;  // TODO: переделать, чтобы бралось из редакса или типа того
 
-  const player = match.matchPlayers.find(p => p.steamAccountid === playerAccountId);
-  const kda = ((player.kills + player.assists) / player.deaths).toFixed(1);
-  const skda = `${player.kills}/${player.deaths}/${player.assists} (${kda})`;
-  const playerSummary = {
-    position: player.position,
-    heroname: player.heroShortName,
+  const me = match.matchPlayers.find(p => p.steamAccountid === myAccountId);
+  const kda = ((me.kills + me.assists) / me.deaths).toFixed(1);
+  const skda = `${me.kills}/${me.deaths}/${me.assists} (${kda})`;
+  const mySummary = {
+    position: me.position,
+    heroname: me.heroShortName,
     stats: {
       kda: skda,
-      gpm: player.goldPerMinute,
-      xpm: player.experiencePerMinute,
-      net: player.networth,
-      hdmg: player.heroDamage,
-      tdmg: player.towerDamage,
-      lvl: player.level,
+      gpm: me.goldPerMinute,
+      xpm: me.experiencePerMinute,
+      net: me.networth,
+      hdmg: me.heroDamage,
+      tdmg: me.towerDamage,
+      lvl: me.level,
     }
   };
 
   // TODO: сделать типы для матча
-  const playerTeam = match.matchPlayers.filter(p => p.isRadiant === player.isRadiant);
-  const enemyTeam = match.matchPlayers.filter(p => p.isRadiant !== player.isRadiant);
+  const myTeam = match.matchPlayers.filter(p => p.isRadiant === me.isRadiant);
+  const enemyTeam = match.matchPlayers.filter(p => p.isRadiant !== me.isRadiant);
 
   // TODO: счет считать не по килам союзников, а по смертям соперников
-  const playerTeamInfo: TeamStats = {
-    score: playerTeam.reduce((acc, p) => acc + p.kills, 0),
-    win: player.isVictory,
-    players: playerTeam.sort(sortPlayersByRole).map(getPlayerStats)
+  const myTeamInfo: TeamStats = {
+    score: myTeam.reduce((acc, p) => acc + p.kills, 0),
+    win: me.isVictory,
+    players: myTeam.sort(sortPlayersByRole).map(getPlayerStats)
   };
   const enemyTeamInfo: TeamStats = {
     score: enemyTeam.reduce((acc, p) => acc + p.kills, 0),
-    win: !player.isVictory,
+    win: !me.isVictory,
     players: enemyTeam.sort(sortPlayersByRole).map(getPlayerStats)
   };
 
   return (
-    <div className={styles.matchBox}>
+    <div className={styles.matchBox} key={matchBasicInfo.matchId}>
       <MatchBasicInfo summary={matchBasicInfo} />
       <div className={styles.matchBody}>
-        <PlayerSummary summary={playerSummary} />
+        <PlayerSummary summary={mySummary} />
         <div className={styles.teamInfoBox}>
-          <TeamInfo summary={playerTeamInfo} />
+          <TeamInfo summary={myTeamInfo} />
           <TeamInfo summary={enemyTeamInfo} />
         </div>
       </div>
@@ -68,6 +74,7 @@ function sortPlayersByRole(x, y) {
   else 
     return 0;
 }
+
 
 function getPlayerStats(player): PlayerStats {
   return { 

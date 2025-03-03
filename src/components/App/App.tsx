@@ -2,6 +2,7 @@ import React from 'react';
 import { createContext } from "react";
 
 
+import { MyDatabase } from '@domain/database/MyDatabase';
 import Matches from "@components/Matches/Matches";
 
 
@@ -18,5 +19,5 @@ export const App: React.FC<Props> = ({ database }) => {
 
 
 type Props = {
-  database: IDBDatabase;
+  database: MyDatabase;
 }

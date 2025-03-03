@@ -18,7 +18,7 @@ export class MatchService {
       const fromDb = (await this.storage.read()).result;
       if (fromDb.length === 0) {
         console.log("В БД матчей нет, загружаю их с сервера...");
-        const loaded = await this.api.getMatchesByPlayerId(playerAccountId, 1000);
+        const loaded = await this.api.getMatchesByPlayerId(playerAccountId, 200);
         const saved = await this.storage.save(loaded);
         this.matches = saved.result;
       } else {
