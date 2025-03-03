@@ -22,21 +22,10 @@
 }
 
 
-.playerStat {
-  border: 1px solid red;
-}
-
-
 .suspMatch {
   width: 50px;
 }
 
 .suspMatchImg {
   width: 100%;
-}
-
-
-.miscMatchInfo {
-  display: flex;
-  flex-direction: column;
 }

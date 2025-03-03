@@ -3,8 +3,11 @@ import React from "react";
 import * as styles from "./MatchLine.module.css";
 
 import { Match } from "@domain/services/stratzapi/datamodel/Match";
+import { PlayerStat } from "./PlayerStat/PlayerStat";
+import { MiscMatchInfo } from "./MiscMatchInfo/MiscMatchInfo";
+import { LobbyType } from "./LobbyType/LobbyType";
+
 import { secondsToHMS } from "@utils/time-utils";
-import { DateUtils } from "@utils/DateUtils";
 
 
 type MatchLineProps = {
@@ -13,7 +16,6 @@ type MatchLineProps = {
 
 
 export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
-  const lobbyType = match.lobbyType.slice(0, 2).toUpperCase();
   const matchDuration = secondsToHMS(match.durationSeconds);
   
   const playerAccountId = 56831765;  // TODO: переделать, чтобы бралось из редакса или типа того
@@ -22,15 +24,15 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
   const enemies = match.matchPlayers.filter(p => p.isRadiant !== player.isRadiant);
   
   const kdaString = `${player.kills}/${player.deaths}/${player.assists}`;
-  const kda = calcRelativeStats(kdaRatio(player.kills, player.deaths, player.assists),
+  const kda = getPlayerPlaceByPerformance(kdaRatio(player.kills, player.deaths, player.assists),
     teammates.map(p => kdaRatio(p.kills, p.deaths, p.assists)),
     enemies.map(p => kdaRatio(p.kills, p.deaths, p.assists))
   );
 
-  const gpm = calcRelativeStats(player.goldPerMinute, teammates.map(t => t.goldPerMinute), enemies.map(e => e.goldPerMinute));
-  const xpm = calcRelativeStats(player.experiencePerMinute, teammates.map(t => t.experiencePerMinute), enemies.map(e => e.experiencePerMinute));
-  const heroDmg = calcRelativeStats(player.heroDamage, teammates.map(t => t.heroDamage), enemies.map(e => e.heroDamage));
-  const towerDmg = calcRelativeStats(player.towerDamage, teammates.map(t => t.towerDamage), enemies.map(e => e.towerDamage));
+  const gpm = getPlayerPlaceByPerformance(player.goldPerMinute, teammates.map(t => t.goldPerMinute), enemies.map(e => e.goldPerMinute));
+  const xpm = getPlayerPlaceByPerformance(player.experiencePerMinute, teammates.map(t => t.experiencePerMinute), enemies.map(e => e.experiencePerMinute));
+  const heroDmg = getPlayerPlaceByPerformance(player.heroDamage, teammates.map(t => t.heroDamage), enemies.map(e => e.heroDamage));
+  const towerDmg = getPlayerPlaceByPerformance(player.towerDamage, teammates.map(t => t.towerDamage), enemies.map(e => e.towerDamage));
 
   const heroimg = `/assets/img/heroes/${player.heroShortName}.png`;
   const posimg = `/assets/img/pos_icons/${player.position ?? "unknown"}.svg`;
@@ -44,7 +46,7 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
       <div className={styles.suspMatch}>
         <img className={styles.suspMatchImg} src={suspimg} />
       </div>
-      {lobbyType}
+      <LobbyType lobbyType={match.lobbyType} />
       {matchDuration}
       <div className={styles.playerHero}>
         <img className={styles.playerHeroImg} src={heroimg} />
@@ -63,38 +65,11 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
 }
 
 
-type PlayerStatProps = {
-  pic: string;
-  stat: [number, number, number]
-  alt?: string;
-}
-
-const PlayerStat: React.FC<PlayerStatProps> = ({ pic, stat, alt }) => {
-  const valuePretty = stat[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  const result: string = alt ? 
-    `${alt} [${stat[1]}] [${stat[2]}]` :
-    `${valuePretty} [${stat[1]}] [${stat[2]}]`;
-  return <div className={styles.playerStat}><img src={pic} style={{width: "30px"}}/>{result}</div>
-}
-
-
-type MiscMatchInfoProps = {
-  matchId: number;
-  startDateTimeUnix: number;
-}
-const MiscMatchInfo: React.FC<MiscMatchInfoProps> = ({ matchId, startDateTimeUnix }) => {
-  return <div className={styles.miscMatchInfo}>
-    <div>{DateUtils.formatUnixToDate(startDateTimeUnix)}</div>
-    <div>{matchId}</div>
-  </div>
-}
-
-
 const winBgColor = "#70E154";
 const loseBgColor = "#F02121";
 
 
-function calcRelativeStats(player: number, team: number[], enemies: number[]): [player: number, team: number, enemies: number] {
+function getPlayerPlaceByPerformance(player: number, team: number[], enemies: number[]): [player: number, team: number, enemies: number] {
   const desc = (a: number, b: number): number => b - a;
   team.push(player);
   team.sort(desc);
