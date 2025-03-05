@@ -1,4 +1,6 @@
-.miscMatchInfo {
+.wrapper {
   display: flex;
   flex-direction: column;
+  /* background-color: #EBE4E4; */
+  border-left: 1px solid black;
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 
 import * as styles from "./MatchLine.module.css";
 
@@ -6,6 +7,8 @@ import { Match } from "@domain/services/stratzapi/datamodel/Match";
 import { PlayerStat } from "./PlayerStat/PlayerStat";
 import { MiscMatchInfo } from "./MiscMatchInfo/MiscMatchInfo";
 import { LobbyType } from "./LobbyType/LobbyType";
+import { PlayerRole } from "./PlayerRole/PlayerRole";
+import { SuspectMarker } from "./SuspectMarker/SuspectMarker";
 
 import { secondsToHMS } from "@utils/time-utils";
 
@@ -34,27 +37,18 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
   const heroDmg = getPlayerPlaceByPerformance(player.heroDamage, teammates.map(t => t.heroDamage), enemies.map(e => e.heroDamage));
   const towerDmg = getPlayerPlaceByPerformance(player.towerDamage, teammates.map(t => t.towerDamage), enemies.map(e => e.towerDamage));
 
-  const heroimg = `/assets/img/heroes/${player.heroShortName}.png`;
-  const posimg = `/assets/img/pos_icons/${player.position ?? "unknown"}.svg`;
   const statStub = `/assets/img/player_stats_icons/tmp_stat.svg`;
-  const suspimg = `/assets/img/misc/susp_match.png`;
+  const suspect = true;
 
-  const bgColor = player.isVictory ? winBgColor : loseBgColor;
+  const wrapperStyles = classNames([styles.wrapper, player.isVictory ? styles.win : styles.lose])
 
   return (
-    <div className={styles.matchLine} style={{backgroundColor: bgColor}}>
-      <div className={styles.suspMatch}>
-        <img className={styles.suspMatchImg} src={suspimg} />
-      </div>
+    <div className={wrapperStyles}>
+      <SuspectMarker suspect={suspect} />
       <LobbyType lobbyType={match.lobbyType} />
-      {matchDuration}
-      <div className={styles.playerHero}>
-        <img className={styles.playerHeroImg} src={heroimg} />
-      </div>
-      <div className={styles.playerPosition}>
-        <img className={styles.playerPositionImg} src={posimg} />
-      </div>
-      <PlayerStat pic={statStub} stat={kda} alt={kdaString}/>
+      <div className={styles.matchDuration}>{matchDuration}</div>
+      <PlayerRole heroname={player.heroShortName} position={player.position} />
+      <PlayerStat pic={statStub} stat={kda} altValue={kdaString}/>
       <PlayerStat pic={statStub} stat={gpm} />
       <PlayerStat pic={statStub} stat={xpm} />
       <PlayerStat pic={statStub} stat={heroDmg} />
@@ -65,10 +59,8 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
 }
 
 
-const winBgColor = "#70E154";
-const loseBgColor = "#F02121";
-
-
+// TODO: возможно эту функцию, как и функцию определения подозрительности матча,
+// надо вынести в отдельный класс.
 function getPlayerPlaceByPerformance(player: number, team: number[], enemies: number[]): [player: number, team: number, enemies: number] {
   const desc = (a: number, b: number): number => b - a;
   team.push(player);

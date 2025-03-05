@@ -1,24 +1,24 @@
-.matchLine {
+.wrapper {
   display: flex;
+  justify-content: space-between;
+  border: 1px solid black;
+  max-height: 35px;
+}
+
+.win {
+  background-color: #70E154;
+}
+
+.lose {
+  background-color: #E37777; /*#F19191;*/
 }
 
 
-.playerHero {
-  width: 100px;
-}
-
-.playerHeroImg {
-  width: 100%;
-}
-
-
-.playerPosition {
-  background-color: blue;
-  width: 50px;
-}
-
-.playerPositionImg {
-  width: 100%;
+.matchDuration {
+  display: flex;
+  min-width: 50pt;
+  justify-content: center;
+  align-items: center;
 }
 
 

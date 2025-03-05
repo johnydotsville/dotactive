@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100px;
+}
+
+.hero {
+  height: 100%;
+}
+
+.position {
+  height: 100%;
+  background-color: #252828;
+}

@@ -10,7 +10,7 @@ type MiscMatchInfoProps = {
 
 
 export const MiscMatchInfo: React.FC<MiscMatchInfoProps> = ({ matchId, startDateTimeUnix }) => {
-  return <div className={styles.miscMatchInfo}>
+  return <div className={styles.wrapper}>
     <div>{DateUtils.formatUnixToDate(startDateTimeUnix)}</div>
     <div>{matchId}</div>
   </div>

@@ -1,0 +1,11 @@
+.wrapper {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 75px;
+}
+
+
+.suspectPic {
+  height: 100%;
+}
