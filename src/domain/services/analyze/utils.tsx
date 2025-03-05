@@ -22,3 +22,9 @@ export function getPlayerPlaceByPerformance(player: number, team: number[], enem
 
   return [player, positionInTeam, positionInEnemies];
 }
+
+
+export function kdaRatio(kill: number, death: number, assist: number): number {
+  const rawKda = (kill + assist) / death;
+  return Math.round(rawKda * 100) / 100;
+}

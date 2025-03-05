@@ -13,6 +13,7 @@ import { SuspectMarker } from "./SuspectMarker/SuspectMarker";
 
 import { secondsToHMS } from "@utils/time-utils";
 import { getPlayerPlaceByPerformance } from "@domain/services/analyze/utils";
+import { kdaRatio } from "@domain/services/analyze/utils";
 import { SuspChecker } from "@domain/services/analyze/SuspChecker";
 
 
@@ -74,10 +75,4 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
       <MiscMatchInfo matchId={match.id} startDateTimeUnix={match.startDateTime} />
     </div>
   )
-}
-
-
-function kdaRatio(kill: number, death: number, assist: number): number {
-  const rawKda = (kill + assist) / death;
-  return Math.round(rawKda * 100) / 100;
 }
