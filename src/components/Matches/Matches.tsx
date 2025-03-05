@@ -1,6 +1,5 @@
 import {useState} from 'react';
 import { useEffect } from "react";
-import { Match } from "./Match/Match";
 import { MatchLine } from './MatchLine/MatchLine';
 
 import { useContext } from 'react';
@@ -31,8 +30,6 @@ export default function Matches() {
     }
   }, []);
 
-  // const matchesList = matches.map(m => <Match match={m} />);
-  // const allPaint = matches.map(m => <div key={m.id}>{m.id}</div>);
   const displayMatches = matches.map(m => <MatchLine key={m.id} match={m} ></MatchLine>);
 
   return (

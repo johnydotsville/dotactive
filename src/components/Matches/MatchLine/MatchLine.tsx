@@ -11,6 +11,7 @@ import { PlayerRole } from "./PlayerRole/PlayerRole";
 import { SuspectMarker } from "./SuspectMarker/SuspectMarker";
 
 import { secondsToHMS } from "@utils/time-utils";
+import { getPlayerPlaceByPerformance } from "@domain/services/analyze/utils";
 
 
 type MatchLineProps = {
@@ -56,20 +57,6 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
       <MiscMatchInfo matchId={match.id} startDateTimeUnix={match.startDateTime} />
     </div>
   )
-}
-
-
-// TODO: возможно эту функцию, как и функцию определения подозрительности матча,
-// надо вынести в отдельный класс.
-function getPlayerPlaceByPerformance(player: number, team: number[], enemies: number[]): [player: number, team: number, enemies: number] {
-  const desc = (a: number, b: number): number => b - a;
-  team.push(player);
-  team.sort(desc);
-  enemies.push(player);
-  enemies.sort(desc);
-  const positionInTeam = team.indexOf(player) + 1;
-  const positionInEnemies = enemies.indexOf(player) + 1;
-  return [player, positionInTeam, positionInEnemies];
 }
 
 
