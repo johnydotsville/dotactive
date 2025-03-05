@@ -2,16 +2,23 @@ import * as styles from "./SuspectMarker.module.css";
 
 
 type SuspectMarkerProps = {
-  suspect: boolean;
+  suspPoints: number;
 }
 
 
-export const SuspectMarker: React.FC<SuspectMarkerProps> = ({ suspect }) => {
+// TODO: Здесь картинку можно сделать SVG и менять ей цвет программно в зависимости
+// от количества очков подозрительности, чтобы не плодить кучу png.
+export const SuspectMarker: React.FC<SuspectMarkerProps> = ({ suspPoints }) => {
   const suspimg = `/assets/img/misc/susp_match.png`;
+  let isSusp = false;
+
+  if (suspPoints > 0) {
+    isSusp = true;
+  }
 
   return (
     <div className={styles.wrapper}>
-      {suspect && <img className={styles.suspectPic} src={suspimg} />}
+      {isSusp && <img className={styles.suspectPic} src={suspimg} />}
     </div>
   )
 }
