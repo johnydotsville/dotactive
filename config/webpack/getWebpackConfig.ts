@@ -18,6 +18,7 @@ export function getWebpackConfig(settings: ScriptEnvironment,
     output: {
       filename: '[name].[contenthash].js',
       path: paths.outputDir,
+      publicPath: "/",  // WARN: Возможно, это временная мера для решения проблемы с запуском на дев-сервере. Мб потом эта настройка будет руинить.
       clean: true
     },
     devtool: "source-map",

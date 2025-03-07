@@ -5,6 +5,12 @@
   max-height: 35px;
 }
 
+
+.wrapper :hover {
+  cursor: pointer;
+}
+
+
 .win {
   background-color: #70E154;
 }

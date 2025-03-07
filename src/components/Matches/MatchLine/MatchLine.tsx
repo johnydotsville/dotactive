@@ -61,8 +61,13 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
   const statStub = `/assets/img/player_stats_icons/tmp_stat.svg`;  
   const wrapperStyles = classNames([styles.wrapper, info.player.isVictory ? styles.win : styles.lose])
 
+  // TODO: Сделать, чтобы при наведении на MatchLine курсор менял вид на руку, как на ссылке.
+  const handleMatchLineClick = (matchId: number) => {
+    alert(`Должно открываться окно детальной информации о матче ${matchId}.`);
+  }
+
   return (
-    <div className={wrapperStyles}>
+    <div className={wrapperStyles} onClick={() => handleMatchLineClick(match.id)}>
       <SuspectMarker suspPoints={info.suspect} />
       <LobbyType lobbyType={match.lobbyType} />
       <div className={styles.matchDuration}>{info.matchDuration}</div>
