@@ -1,6 +1,8 @@
 import React from "react";
 import classNames from "classnames";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 import * as styles from "./MatchLine.module.css";
 
@@ -23,6 +25,7 @@ type MatchLineProps = {
 
 
 export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
+  const navigate = useNavigate();
   const info = useMemo(() => {
     const matchDuration = secondsToHMS(match.durationSeconds);
     
@@ -61,9 +64,8 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
   const statStub = `/assets/img/player_stats_icons/tmp_stat.svg`;  
   const wrapperStyles = classNames([styles.wrapper, info.player.isVictory ? styles.win : styles.lose])
 
-  // TODO: Сделать, чтобы при наведении на MatchLine курсор менял вид на руку, как на ссылке.
   const handleMatchLineClick = (matchId: number) => {
-    alert(`Должно открываться окно детальной информации о матче ${matchId}.`);
+    navigate(`/matches/${matchId}`, { state: match });  // TODO: переделать потом, чтобы не хардкодить URL
   }
 
   return (
