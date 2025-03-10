@@ -61,7 +61,6 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
     }, [match.id]
   );
 
-  const statStub = `/assets/img/player_stats_icons/tmp_stat.svg`;  
   const wrapperStyles = classNames([styles.wrapper, info.player.isVictory ? styles.win : styles.lose])
 
   const handleMatchLineClick = (matchId: number) => {
@@ -74,12 +73,22 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
       <LobbyType lobbyType={match.lobbyType} />
       <div className={styles.matchDuration}>{info.matchDuration}</div>
       <PlayerRole heroname={info.player.heroShortName} position={info.player.position} />
-      <PlayerStat pic={statStub} stat={info.kda} altValue={info.kdaString}/>
-      <PlayerStat pic={statStub} stat={info.gpm} />
-      <PlayerStat pic={statStub} stat={info.xpm} />
-      <PlayerStat pic={statStub} stat={info.heroDmg} />
-      <PlayerStat pic={statStub} stat={info.towerDmg} />
+      <PlayerStat pic={icons.stub} stat={info.kda} altValue={info.kdaString}/>
+      <PlayerStat pic={icons.gpm} stat={info.gpm} />
+      <PlayerStat pic={icons.xpm} stat={info.xpm} />
+      <PlayerStat pic={icons.heroDmg} stat={info.heroDmg} />
+      <PlayerStat pic={icons.towerDmg} stat={info.towerDmg} />
       <MiscMatchInfo matchId={match.id} startDateTimeUnix={match.startDateTime} />
     </div>
   )
+}
+
+
+const iconsPlayerStatsPath = "/assets/img/player_stats_icons";
+const icons = {
+  gpm: `${iconsPlayerStatsPath}/gpm.svg`,
+  xpm: `${iconsPlayerStatsPath}/xpm.svg`,
+  heroDmg: `${iconsPlayerStatsPath}/herodmg.svg`,
+  towerDmg: `${iconsPlayerStatsPath}/towerdmg.svg`,
+  stub: `${iconsPlayerStatsPath}/tmp_stat.svg`
 }

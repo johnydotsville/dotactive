@@ -14,7 +14,7 @@ export const PlayerRole: React.FC<PlayerRoleProps> = ({ heroname, position }) =>
   const [heroIconLoadingError, setHeroIconLoadingError] = useState(false);
 
   const heroimg = heroIconLoadingError ? "stubportrait" : heroname;
-  const heroimgPath = `/assets/img/heroes/${heroimg}.png`;
+  const heroimgPath = `/assets/img/heroes/${heroimg}.png`;  // TODO: Сделать пути до ассетов через глобальную переменную, чтобы не хардкодить
   let posImg;
   const defaultSize = "60%";
   switch (position) {
@@ -34,7 +34,7 @@ export const PlayerRole: React.FC<PlayerRoleProps> = ({ heroname, position }) =>
       posImg = <HardSupportIcon size={defaultSize}/>;
       break;
     default:
-      const posimgPath = `/assets/img/pos_icons/unknown.svg`;
+      const posimgPath = `/assets/img/misc/position_unknown.svg`;
       posImg = <img src={posimgPath} loading="lazy" alt={position} height={"70%"} />
   }
 
