@@ -22,8 +22,8 @@ export const PlayerRole: React.FC<PlayerRoleProps> = ({ heroname, position }) =>
       posImg = <CarryIcon size={defaultSize}/>;
       break;
     case "POSITION_2":
-        posImg = <MidIcon size={defaultSize}/>;
-        break;
+      posImg = <MidIcon size={defaultSize}/>;
+      break;
     case "POSITION_3":
       posImg = <HardlineIcon size={defaultSize}/>;
       break;
