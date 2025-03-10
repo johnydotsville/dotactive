@@ -12,4 +12,8 @@
 .position {
   height: 100%;
   background-color: #252828;
+  min-width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
