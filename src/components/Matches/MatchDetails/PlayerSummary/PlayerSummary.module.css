@@ -1,0 +1,19 @@
+.wrapper {
+  background-color: violet;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  width: 150px;
+  border: 1px solid black;
+}
+
+
+.playerRoleWrapper {
+  height: 50px;
+}
+
+
+.playerStatWrapper {
+  height: 30px;
+  background-color: greenyellow;
+}

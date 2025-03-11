@@ -12,7 +12,7 @@ import { MiscMatchInfo } from "./MiscMatchInfo/MiscMatchInfo";
 import { LobbyType } from "./LobbyType/LobbyType";
 import { PlayerRole } from "./PlayerRole/PlayerRole";
 import { SuspectMarker } from "./SuspectMarker/SuspectMarker";
-
+import { icons } from "@utils/Ways";
 import { secondsToHMS } from "@utils/time-utils";
 import { getPlayerPlaceByPerformance } from "@domain/services/analyze/utils";
 import { kdaRatio } from "@domain/services/analyze/utils";
@@ -81,14 +81,4 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
       <MiscMatchInfo matchId={match.id} startDateTimeUnix={match.startDateTime} />
     </div>
   )
-}
-
-
-const iconsPlayerStatsPath = "/assets/img/player_stats_icons";
-const icons = {
-  gpm: `${iconsPlayerStatsPath}/gpm.svg`,
-  xpm: `${iconsPlayerStatsPath}/xpm.svg`,
-  heroDmg: `${iconsPlayerStatsPath}/herodmg.svg`,
-  towerDmg: `${iconsPlayerStatsPath}/towerdmg.svg`,
-  stub: `${iconsPlayerStatsPath}/tmp_stat.svg`
 }
