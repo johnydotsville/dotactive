@@ -33,10 +33,34 @@ export function kdaRatio(kill: number, death: number, assist: number): number {
 
 
 export function getRadiantTeam(players: MatchPlayer[]): MatchPlayer[] {
-  return players.filter(p => p.isRadiant).sort((p1, p2) => p1.position.localeCompare(p2.position));
+  const radiant = players.filter(p => p.isRadiant);
+  try {
+    radiant.sort((p1, p2) => {
+      if (p1.position && p2.position) {
+        return p1.position.localeCompare(p2.position);
+      } else {
+        return -1;
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+  return radiant;
 }
 
 
 export function getDireTeam(players: MatchPlayer[]): MatchPlayer[] {
-  return players.filter(p => !p.isRadiant).sort((p1, p2) => p1.position.localeCompare(p2.position));
+  const dire = players.filter(p => !p.isRadiant);
+  try {
+    dire.sort((p1, p2) => {
+      if (p1.position && p2.position) {
+        return p1.position.localeCompare(p2.position);
+      } else {
+        return -1;
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+  return dire;
 }

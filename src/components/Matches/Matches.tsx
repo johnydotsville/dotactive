@@ -7,7 +7,6 @@ import { DatabaseContext } from '@components/App/App';
 import { MatchStorage } from '@domain/database/storage/MatchStorage';
 import { MatchService } from '@domain/services/matches/MatchService';
 import { StorageName } from '@domain/database/config/storages/StorageName';
-import { StratzAPI } from '@domain/services/stratzapi/StratzAPI';
 import { MyDatabase } from '@domain/database/MyDatabase';
 
 
@@ -19,8 +18,7 @@ export default function Matches() {
     init();
     async function init() {
       const matchStorage = database.getStorage<MatchStorage>(StorageName.Matches);
-      const api = new StratzAPI();
-      const ms = new MatchService(matchStorage, api);
+      const ms = new MatchService(matchStorage);
 
       const accountId = 56831765;
       await ms.init(accountId);

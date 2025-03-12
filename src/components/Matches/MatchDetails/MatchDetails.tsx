@@ -47,8 +47,8 @@ export const MatchDetails = () => {
   const radiant = getRadiantTeam(match.matchPlayers);
   const dire = getDireTeam(match.matchPlayers);
 
-  const radiantSummary = radiant.map(p => <PlayerSummary player={p} mates={radiant} enemies={dire} isUser={p.steamAccountid === playerAccountId} />);
-  const direSummary = dire.map(p => <PlayerSummary player={p} mates={dire} enemies={radiant} isUser={p.steamAccountid === playerAccountId} />);
+  const radiantSummary = radiant.map(p => <PlayerSummary key={p.steamAccountid} player={p} mates={radiant} enemies={dire} isUser={p.steamAccountid === playerAccountId} />);
+  const direSummary = dire.map(p => <PlayerSummary key={p.steamAccountid} player={p} mates={dire} enemies={radiant} isUser={p.steamAccountid === playerAccountId} />);
 
   return (
     <div className={styles.wrapper}>

@@ -14,6 +14,7 @@ export class StratzAPI {
 
   public constructor() {
     this.requestConfig = stratzRequestConfig;
+    this.setToken(window.localStorage.getItem("current_token"));
   }
 
   public setToken(token: string): void {

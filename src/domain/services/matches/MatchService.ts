@@ -6,11 +6,9 @@ import { StratzAPI } from '@domain/services/stratzapi/StratzAPI';
 export class MatchService {
   private matches: Match[];
   private storage: MatchStorage;
-  private api: StratzAPI
 
-  public constructor(storage: MatchStorage, api: StratzAPI) {
+  public constructor(storage: MatchStorage) {
     this.storage = storage;
-    this.api = api;
   }
 
   public async init(playerAccountId: number) {
@@ -18,7 +16,8 @@ export class MatchService {
       const fromDb = (await this.storage.read()).result;
       if (fromDb.length === 0) {
         console.log("В БД матчей нет, загружаю их с сервера...");
-        const loaded = await this.api.getMatchesByPlayerId(playerAccountId, 200);
+        const api = new StratzAPI();
+        const loaded = await api.getMatchesByPlayerId(playerAccountId, 200);
         const saved = await this.storage.save(loaded);
         this.matches = saved.result;
       } else {
