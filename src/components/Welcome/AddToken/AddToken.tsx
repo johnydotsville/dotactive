@@ -1,10 +1,15 @@
 import { useRef } from "react";
 import { useState } from "react";
 import { useMemo } from "react";
+import { useContext } from "react";
 
 
 import * as styles from "./AddToken.module.css";
 import { StratzAPI } from "@domain/services/stratzapi/StratzAPI";
+import { DatabaseContext } from "@components/App/App";
+import { MyDatabase } from "@domain/database/MyDatabase";
+import { Token, TokenStorage } from "@domain/database/storage/TokenStorage";
+import { StorageName } from "@domain/database/config/storages/StorageName";
 
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdWJqZWN0IjoiNmVmNzRjMmItMjJiZi00Mzk3LTgyMTUtY2VjYjk3ZDY2YmNkIiwiU3RlYW1JZCI6IjU2ODMxNzY1IiwibmJmIjoxNzE2ODk2ODk5LCJleHAiOjE3NDg0MzI4OTksImlhdCI6MTcxNjg5Njg5OSwiaXNzIjoiaHR0cHM6Ly9hcGkuc3RyYXR6LmNvbSJ9.QoAd60oMIUV4D8N73Lcj6b2MTqc-96vv6PzFcLQqrhg
@@ -14,6 +19,7 @@ export const AddToken = () => {
   const [ tokenValid, setTokenValid ] = useState(false);
   
   const tokenRef = useRef<HTMLInputElement | null>(null);
+  const database: MyDatabase = useContext(DatabaseContext);
 
   const api = useMemo(() => {
     return new StratzAPI();
@@ -31,7 +37,12 @@ export const AddToken = () => {
   }
 
   const saveToken = async () => {
-    await saveValidToken(tokenRef.current.value);
+    const storage = database.getStorage<TokenStorage>(StorageName.Tokens);
+    const token: Token = { token: tokenRef.current.value };
+    const saveTokenResult = await storage.save(token);  // TODO: Сделать мб проверку на уже существующий такой же токен, чтобы не сохранять одинаковые?
+    const errors = saveTokenResult.error;
+    const result = saveTokenResult.result[0];
+    window.localStorage.setItem("current_token", result.token);
     setTokenValid(false);
     setTokenInputEnabled(true);
     tokenRef.current.value = "";
@@ -53,7 +64,7 @@ export const AddToken = () => {
 
 
 async function saveValidToken(token: string) {
-
+  
 }
 
 /*

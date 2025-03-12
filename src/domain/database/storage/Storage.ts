@@ -40,6 +40,11 @@ export abstract class Storage<T, K> implements IStorage<T, K> {
     try {
       const saveRequest: IDBRequest = storage.put(data);
       saveRequest.onsuccess = () => {
+        // TODO: Мб стоит сделать какой-то общий класс "Сохраняемый объект", а в нем опциональное поле id
+        // и объктам, у которых по природе нет id, добавлять id полученный от БД при автоинкременте
+        // if (!data.hasOwnProperty("id")) {
+        //   data.id = saveRequest.result;
+        // }
         report.addResult(data);
       }
   

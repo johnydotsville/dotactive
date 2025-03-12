@@ -1,4 +1,5 @@
 export enum StorageName {
   Matches = "matches",
-  Constants = "constants"
+  Constants = "constants",
+  Tokens = "tokens"
 }

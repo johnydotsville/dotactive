@@ -5,9 +5,6 @@ import { App } from "./components/App/App";
 import { MyDatabase } from '@domain/database/MyDatabase';
 
 
-import { StratzAPI } from '@domain/services/stratzapi/StratzAPI';
-
-
 async function prepare() {
   const database = MyDatabase.getInstance();
   await database.init();
