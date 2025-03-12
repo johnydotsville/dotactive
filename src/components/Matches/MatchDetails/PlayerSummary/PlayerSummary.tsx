@@ -1,9 +1,10 @@
 import { useMemo } from "react";
+import classNames from "classnames";
 
 
 import * as styles from "./PlayerSummary.module.css"
 import { MatchPlayer } from "@domain/services/stratzapi/datamodel/MatchPlayer"
-import { PlayerRole } from "@components/Matches/MatchLine/PlayerRole/PlayerRole";
+import { PlayerRole } from "@components/Matches/Common/PlayerRole/PlayerRole";
 import { getPlayerPlaceByPerformance } from "@domain/services/analyze/utils";
 import { kdaRatio } from "@domain/services/analyze/utils";
 import { icons } from "@utils/Ways";
@@ -13,14 +14,13 @@ import { PlayerStat } from "@components/Matches/MatchLine/PlayerStat/PlayerStat"
 type PlayerSummaryProps = {
   player: MatchPlayer,
   mates: MatchPlayer[],
-  enemies: MatchPlayer[]
+  enemies: MatchPlayer[],
+  isUser: boolean  // Это игрок, который сейчас пользуется программой
 }
 
 
-export const PlayerSummary: React.FC<PlayerSummaryProps> = ({ player, mates, enemies }) => {
-  const info = useMemo(() => {
-        const playerAccountId = 56831765;  // TODO: переделать, чтобы бралось из редакса или типа того
-        
+export const PlayerSummary: React.FC<PlayerSummaryProps> = ({ player, mates, enemies, isUser }) => {
+  const info = useMemo(() => {        
         mates = mates.filter(p => p.steamAccountid !== player.steamAccountid);
 
         const kdaString = `${player.kills}/${player.deaths}/${player.assists}`;
@@ -46,8 +46,13 @@ export const PlayerSummary: React.FC<PlayerSummaryProps> = ({ player, mates, ene
       }, []
     );
 
+  const wrapper = classNames([
+    styles.wrapper,
+    isUser ? styles.userWrapper : styles.notUserWrapper
+  ]);
+
   return (
-    <div className={styles.wrapper}>
+    <div className={wrapper}>
       <div className={styles.playerRoleWrapper}>
         <PlayerRole heroname={player.heroShortName} position={player.position} />
       </div>

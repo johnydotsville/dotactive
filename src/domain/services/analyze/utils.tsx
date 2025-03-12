@@ -1,3 +1,5 @@
+import { MatchPlayer } from "../stratzapi/datamodel/MatchPlayer";
+
 /**
  * Рассчитывает, на каком месте находится показатель игрока относительно
  * показателей его тиммейтов и соперников.
@@ -27,4 +29,14 @@ export function getPlayerPlaceByPerformance(player: number, team: number[], enem
 export function kdaRatio(kill: number, death: number, assist: number): number {
   const rawKda = (kill + assist) / death;
   return Math.round(rawKda * 100) / 100;
+}
+
+
+export function getRadiantTeam(players: MatchPlayer[]): MatchPlayer[] {
+  return players.filter(p => p.isRadiant).sort((p1, p2) => p1.position.localeCompare(p2.position));
+}
+
+
+export function getDireTeam(players: MatchPlayer[]): MatchPlayer[] {
+  return players.filter(p => !p.isRadiant).sort((p1, p2) => p1.position.localeCompare(p2.position));
 }

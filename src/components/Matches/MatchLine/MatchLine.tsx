@@ -10,7 +10,7 @@ import { Match } from "@domain/services/stratzapi/datamodel/Match";
 import { PlayerStat } from "./PlayerStat/PlayerStat";
 import { MiscMatchInfo } from "./MiscMatchInfo/MiscMatchInfo";
 import { LobbyType } from "./LobbyType/LobbyType";
-import { PlayerRole } from "./PlayerRole/PlayerRole";
+import { PlayerRole } from "../Common/PlayerRole/PlayerRole";
 import { SuspectMarker } from "./SuspectMarker/SuspectMarker";
 import { icons } from "@utils/Ways";
 import { secondsToHMS } from "@utils/time-utils";

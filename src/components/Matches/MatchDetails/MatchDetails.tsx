@@ -11,6 +11,7 @@ import { MyDatabase } from "@domain/database/MyDatabase";
 import { MatchStorage } from "@domain/database/storage/MatchStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
 import { PlayerSummary } from "./PlayerSummary/PlayerSummary";
+import { getRadiantTeam, getDireTeam } from "@domain/services/analyze/utils";
 
 
 const playerAccountId = 56831765;  // TODO: переделать, чтобы бралось из редакса или типа того
@@ -43,15 +44,11 @@ export const MatchDetails = () => {
     return <div style={{fontSize: "50px"}}>Загружаю данные о матче из локальной БД...</div>
   }
 
-  const player = match.matchPlayers.find(p => p.steamAccountid === playerAccountId);
-  const mates = match.matchPlayers.filter(p => p.isRadiant === player.isRadiant && p.steamAccountid !== player.steamAccountid);
-  const enemies = match.matchPlayers.filter(p => p.isRadiant !== player.isRadiant);
+  const radiant = getRadiantTeam(match.matchPlayers);
+  const dire = getDireTeam(match.matchPlayers);
 
-  const radiant = match.matchPlayers.filter(p => p.isRadiant).sort((p1, p2) => p1.position.localeCompare(p2.position));
-  const dire = match.matchPlayers.filter(p => !p.isRadiant).sort((p1, p2) => p1.position.localeCompare(p2.position));
-
-  const radiantSummary = radiant.map(rp => <PlayerSummary player={rp} mates={radiant} enemies={dire} />);
-  const direSummary = dire.map(dp => <PlayerSummary player={dp} mates={dire} enemies={radiant} />);
+  const radiantSummary = radiant.map(p => <PlayerSummary player={p} mates={radiant} enemies={dire} isUser={p.steamAccountid === playerAccountId} />);
+  const direSummary = dire.map(p => <PlayerSummary player={p} mates={dire} enemies={radiant} isUser={p.steamAccountid === playerAccountId} />);
 
   return (
     <div className={styles.wrapper}>

@@ -4,7 +4,16 @@
   align-items: stretch;
   flex-direction: column;
   width: 150px;
-  border: 1px solid black;
+}
+
+
+.userWrapper {
+  border: 2px solid red;
+}
+
+
+.notUserWrapper {
+  border: 2px solid black;
 }
 
 
