@@ -10,6 +10,7 @@ import { DatabaseContext } from "@components/App/App";
 import { MyDatabase } from "@domain/database/MyDatabase";
 import { Token, TokenStorage } from "@domain/database/storage/TokenStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
+import { checkIfTokenValid } from "@domain/services/stratzapi/utils";
 
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdWJqZWN0IjoiNmVmNzRjMmItMjJiZi00Mzk3LTgyMTUtY2VjYjk3ZDY2YmNkIiwiU3RlYW1JZCI6IjU2ODMxNzY1IiwibmJmIjoxNzE2ODk2ODk5LCJleHAiOjE3NDg0MzI4OTksImlhdCI6MTcxNjg5Njg5OSwiaXNzIjoiaHR0cHM6Ly9hcGkuc3RyYXR6LmNvbSJ9.QoAd60oMIUV4D8N73Lcj6b2MTqc-96vv6PzFcLQqrhg
@@ -21,14 +22,24 @@ export const AddToken = () => {
   const tokenRef = useRef<HTMLInputElement | null>(null);
   const database: MyDatabase = useContext(DatabaseContext);
 
-  const api = useMemo(() => {
-    return new StratzAPI();
-  }, []);
+  // const api = useMemo(() => {
+  //   return new StratzAPI();
+  // }, []);
+
+  // const checkToken = async () => {
+  //   setTokenInputEnabled(false);
+  //   api.setToken(tokenRef.current.value);
+  //   const tokenIsOk = await api.checkToken();
+  //   if (tokenIsOk) {
+  //     setTokenValid(true);
+  //   } else {
+  //     setTokenInputEnabled(true);
+  //   }
+  // }
 
   const checkToken = async () => {
     setTokenInputEnabled(false);
-    api.setToken(tokenRef.current.value);
-    const tokenIsOk = await api.checkToken();
+    const tokenIsOk = await checkIfTokenValid(tokenRef.current.value);
     if (tokenIsOk) {
       setTokenValid(true);
     } else {
