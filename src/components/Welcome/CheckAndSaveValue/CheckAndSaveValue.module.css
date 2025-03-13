@@ -8,7 +8,7 @@
 }
 
 
-.inputPair {
+.flexLine {
   display: flex;
   justify-content: space-between;
 }
