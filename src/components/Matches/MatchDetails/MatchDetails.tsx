@@ -12,9 +12,7 @@ import { MatchStorage } from "@domain/database/storage/MatchStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
 import { PlayerSummary } from "./PlayerSummary/PlayerSummary";
 import { getRadiantTeam, getDireTeam } from "@domain/services/analyze/utils";
-
-
-const playerAccountId = 56831765;  // TODO: переделать, чтобы бралось из редакса или типа того
+import { getCurrentUser } from "@utils/UserUtils";
 
 
 export const MatchDetails = () => {  
@@ -43,6 +41,8 @@ export const MatchDetails = () => {
   if (loading) {
     return <div style={{fontSize: "50px"}}>Загружаю данные о матче из локальной БД...</div>
   }
+
+  const playerAccountId = getCurrentUser();
 
   const radiant = getRadiantTeam(match.matchPlayers);
   const dire = getDireTeam(match.matchPlayers);

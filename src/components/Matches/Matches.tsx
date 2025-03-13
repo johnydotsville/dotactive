@@ -8,6 +8,7 @@ import { MatchStorage } from '@domain/database/storage/MatchStorage';
 import { MatchService } from '@domain/services/matches/MatchService';
 import { StorageName } from '@domain/database/config/storages/StorageName';
 import { MyDatabase } from '@domain/database/MyDatabase';
+import { getCurrentUser } from '@utils/UserUtils';
 
 
 export default function Matches() {
@@ -20,7 +21,7 @@ export default function Matches() {
       const matchStorage = database.getStorage<MatchStorage>(StorageName.Matches);
       const ms = new MatchService(matchStorage);
 
-      const accountId = 56831765;
+      const accountId = getCurrentUser();  // TODO: Если не найден, тогда отобразить приглашение перейти на страницу с выбором пользователя.
       await ms.init(accountId);
 
       const allMatches = await ms.getAllMatches();

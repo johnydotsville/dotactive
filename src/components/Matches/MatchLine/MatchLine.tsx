@@ -17,6 +17,7 @@ import { secondsToHMS } from "@utils/time-utils";
 import { getPlayerPlaceByPerformance } from "@domain/services/analyze/utils";
 import { kdaRatio } from "@domain/services/analyze/utils";
 import { SuspChecker } from "@domain/services/analyze/SuspChecker";
+import { getCurrentUser } from "@utils/UserUtils";
 
 
 type MatchLineProps = {
@@ -29,7 +30,7 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
   const info = useMemo(() => {
     const matchDuration = secondsToHMS(match.durationSeconds);
     
-    const playerAccountId = 56831765;  // TODO: переделать, чтобы бралось из редакса или типа того
+    const playerAccountId = getCurrentUser();  // TODO: Если не найден, тогда отобразить приглашение перейти на страницу с выбором пользователя.
     const player = match.matchPlayers.find(p => p.steamAccountid === playerAccountId);
     const teammates = match.matchPlayers.filter(p => p.isRadiant === player.isRadiant && p.steamAccountid !== playerAccountId);
     const enemies = match.matchPlayers.filter(p => p.isRadiant !== player.isRadiant);
