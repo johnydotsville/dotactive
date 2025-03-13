@@ -18,7 +18,7 @@ export async function checkIfTokenValid(token: string): Promise<boolean> {
       return true;
     }
   } catch (err) { 
-    debugger
+    console.log(err); 
   }
   return false;
 }

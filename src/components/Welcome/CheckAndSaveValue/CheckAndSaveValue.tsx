@@ -1,21 +1,50 @@
 import { useRef } from "react";
 import { useState } from "react";
-import { useMemo } from "react";
-import { useContext } from "react";
+
+import * as styles from "./CheckAndSaveValue.module.css";
 
 
-import * as styles from "./ChechAndSaveValue.module.css";
-import { DatabaseContext } from "@components/App/App";
-import { MyDatabase } from "@domain/database/MyDatabase";
-import { Token, TokenStorage } from "@domain/database/storage/TokenStorage";
-import { StorageName } from "@domain/database/config/storages/StorageName";
+type CheckAndSaveValueProps = {
+  label: string,
+  checkFunc: any,
+  saveFunc: any
+}
 
 
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdWJqZWN0IjoiNmVmNzRjMmItMjJiZi00Mzk3LTgyMTUtY2VjYjk3ZDY2YmNkIiwiU3RlYW1JZCI6IjU2ODMxNzY1IiwibmJmIjoxNzE2ODk2ODk5LCJleHAiOjE3NDg0MzI4OTksImlhdCI6MTcxNjg5Njg5OSwiaXNzIjoiaHR0cHM6Ly9hcGkuc3RyYXR6LmNvbSJ9.QoAd60oMIUV4D8N73Lcj6b2MTqc-96vv6PzFcLQqrhg
+export const CheckAndSaveValue: React.FC<CheckAndSaveValueProps> = ({label, checkFunc, saveFunc}) => {
+  const [ valueInputEnabled, setValueInputEnabled ] = useState(true);
+  const [ valueSaveEnabled, setValueSaveEnabled ] = useState(false);
 
-export const CheckAndSaveValue = () => {
+  const valueRef = useRef<HTMLInputElement | null>(null);
+
+  const checkValue = async () => {
+    setValueInputEnabled(false);
+    const valueIsOk = await checkFunc(valueRef.current.value);
+    if (valueIsOk) {
+      setValueSaveEnabled(true);
+    } else {
+      setValueInputEnabled(true);
+    }
+  }
+
+  const saveValue = async () => {
+    await saveFunc(valueRef.current.value);
+    setValueSaveEnabled(false);
+    setValueInputEnabled(true);
+    valueRef.current.value = "";
+  }
+
   return (
-    <div>stub</div>
+    <div className={styles.wrapper}>
+      <div className={styles.inputPair}>
+        <label htmlFor="valueForCheck">{label}</label>
+        <input id="valueForCheck" ref={valueRef} className={styles.inputPairText} type="text" disabled={!valueInputEnabled} />
+      </div>
+      <div className={styles.inputPair}>
+        <button onClick={checkValue}>Проверить</button>
+        { valueSaveEnabled && <button onClick={saveValue}>Сохранить</button> }
+      </div>
+    </div>
   )
 }
 
