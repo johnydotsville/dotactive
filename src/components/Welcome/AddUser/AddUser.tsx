@@ -3,7 +3,7 @@ import { CheckAndSaveValue } from "../CheckAndSaveValue/CheckAndSaveValue";
 import { checkIfSteamAccountIdValid } from "@domain/services/stratzapi/utils";
 
 
-export const SelectUser = () => {
+export const AddUser = () => {
   const checkAccount = async (account: string) => {
     return await checkIfSteamAccountIdValid(account);
   }
@@ -20,6 +20,7 @@ export const SelectUser = () => {
   }
 
   return (
-    <CheckAndSaveValue label="Steam Account ID" checkFunc={checkAccount} saveFunc={saveAccount} />
+    // <CheckAndSaveValue label="Steam Account ID" checkFunc={checkAccount} saveFunc={saveAccount} />
+    <div>sd</div>
   )
 }

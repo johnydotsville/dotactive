@@ -1,6 +1,6 @@
 .wrapper {
   background-color: aquamarine;
-  width: 400px;
+  min-width: 400px;
   padding: 50px;
   display: flex;
   flex-direction: column;
@@ -16,4 +16,19 @@
 
 .inputPairText {
   width: 250px;
+}
+
+
+.valueBoxStyle {
+  display: flex;
+}
+
+.valueBox_enabled {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.valueBox_disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }

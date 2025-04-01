@@ -14,7 +14,7 @@ export async function checkIfTokenValid(token: string): Promise<boolean> {
   requestConfig.data = testQuery;
   try {
     const response = await axios.request(requestConfig);  // TODO: вынести это как-то, чтобы не писать эти три мутные строчки, а просто запрос отдать
-    if (response.status !== 403) {
+    if (response.status === 200) {
       return true;
     }
   } catch (err) { 

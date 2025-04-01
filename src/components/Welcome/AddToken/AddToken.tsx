@@ -19,6 +19,7 @@ export const AddToken = () => {
   }
 
   return (
-    <CheckAndSaveValue label="Stratz token" checkFunc={checkToken} saveFunc={saveToken} />
+    // <CheckAndSaveValue label="Stratz token" checkFunc={checkToken} saveFunc={saveToken} />
+    <div>sadf</div>
   )
 }
