@@ -1,7 +1,14 @@
-import { useState } from "react";
-import classNames from "classnames";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import ErrorIcon from '@mui/icons-material/Error';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-import * as styles from "./CheckAndSaveValue.module.css";
+import { useState } from "react";
+
 import { ActionResult } from "../FirstVisit/FirstVisit";
 
 
@@ -23,7 +30,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdWJqZWN0IjoiNmVmNzRjMmItMjJiZi00Mzk3LTg
 export const CheckAndSaveValue = ({label, check, save, next}) => {
   const [ stage, setStage ] = useState("input");  // stages: process, input, save, next
   const [ value, setValue ] = useState("");
-  const [ notificatin, setNotification ] = useState(null);
+  const [ notification, setNotification ] = useState(null);
 
   const checkValue = async () => {
     const { func, message } = check;
@@ -62,62 +69,77 @@ export const CheckAndSaveValue = ({label, check, save, next}) => {
     next();
   }
   
-  const notificationbox = notificatin && <Status oftype={notificatin[0]} message={notificatin[1]} />;
+  const notificationbox = notification && <Status oftype={notification[0]} message={notification[1]} />;
 
-  let displaybox;
+  let stagebox;
   switch (stage) {
     case "input": {
-      displaybox = (<>
-        <div className={styles.flexLine}>
-          <label>{label}</label>
-          <div>
-            <input onChange={e => setValue(e.target.value)} type="text" />
-            <button onClick={checkValue}>Проверить</button>
-          </div>
-        </div>
-        { notificationbox }
+      stagebox = (<>
+        <TextField label={label} onChange={e => setValue(e.target.value)}
+          variant="outlined" fullWidth margin="normal" />
+        <Stack direction="row" justifyContent="end" spacing={2}>
+          <Button onClick={checkValue} variant="contained">Проверить</Button>
+        </Stack>
       </>)
       break;
     }
     case "save": {
-      displaybox = (
-        <div>
-          { notificationbox }
-          <button onClick={saveValue}>Сохранить</button>
-          <button onClick={cancelSave}>Отмена</button>
-        </div>
+      stagebox = (
+        <Stack direction="row" justifyContent="end" spacing={2}>
+          <Button onClick={saveValue} variant="contained" color="success">Сохранить</Button>
+          <Button onClick={cancelSave} variant="contained" color="error">Отмена</Button>
+        </Stack>
       )
       break;
     }
     case "next": {
-      displaybox = (
-        <div>
-          { notificationbox }
-          <button onClick={goNextValue}>Далее</button>
-        </div>
+      stagebox = (
+        <Stack direction="row" justifyContent="end" spacing={2}>
+          <Button onClick={goNextValue} variant="contained" color="primary">Далее</Button>
+        </Stack>
       );
       break;
     }
     case "process": {
-      displaybox = notificationbox;
+      stagebox = null;
       break;
     }
   }
 
   return (
-    <div className={styles.wrapper}>
-      { displaybox }
-    </div>
+    <Box sx={{ 
+      border: "1px solid", borderColor: "primary", borderRadius: 1,
+      p: { xs: 1, sm: 2, md: 4 },
+    }}>
+      <Stack direction="column" spacing={2}>
+        { notificationbox }
+        { stagebox }
+      </Stack>
+    </Box>
   )
 }
 
 
 function Status({oftype, message}) {
-  // TODO: сделать крутилку для ожидания, и другие значки для успеха \ провала
-  /*
-  if (oftype === "wait")
-  if (oftype === "success")
-  if (oftype === "failure")
-  */
-  return <div>{message}</div>
+  let marker;
+  switch (oftype) {
+    case "wait": {
+      marker = <CircularProgress />
+      break;
+    }
+    case "success": {
+      marker = <CheckCircleIcon color="success" fontSize="large" />;
+      break;
+    }
+    case "failure": {
+      marker = <ErrorIcon color="error" fontSize="large" />
+      break;
+    }
+  }
+  return (
+    <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
+      {marker}
+      <Typography variant="body1">{message}</Typography>
+    </Stack>
+  )
 }

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Container from "@mui/material/Container";
 
 
 import * as styles from "./Welcome.module.css";
@@ -14,8 +15,13 @@ export const Welcome = () => {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <Container maxWidth="md" sx={{ 
+      minHeight: "100vh", 
+      display: "flex", flexDirection: "column",
+      justifyContent: "center",
+      boxSizing: 'border-box'
+    }}>
       { component }
-    </div>
+    </Container>
   )
 }

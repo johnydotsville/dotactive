@@ -1,7 +1,6 @@
+import Container from "@mui/material/Container";
+
 import { useState } from "react";
-
-
-import * as styles from "./FirstVisit.module.css";
 
 import { checkIfTokenValid } from "@domain/services/stratzapi/utils";
 import { checkIfSteamAccountIdValid } from "@domain/services/stratzapi/utils";
