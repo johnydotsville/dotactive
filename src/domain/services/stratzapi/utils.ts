@@ -4,7 +4,7 @@ import { AxiosGraphqlQueryAdapter } from "@utils/AxiosGraphqlQueryAdapter";
 import { stratzRequestConfig } from '@utils/stratz-request-config';
 
 
-export async function checkIfTokenValid(token: string): Promise<boolean> {
+export async function checkIfTokenValid(token: string): Promise<[boolean, Error]> {
   const testQuery = AxiosGraphqlQueryAdapter.toAxiosQuery(testIfTokenValid, "tokenTestQuery")
   const requestConfig: any = stratzRequestConfig;
   requestConfig.headers = {
@@ -15,12 +15,11 @@ export async function checkIfTokenValid(token: string): Promise<boolean> {
   try {
     const response = await axios.request(requestConfig);  // TODO: вынести это как-то, чтобы не писать эти три мутные строчки, а просто запрос отдать
     if (response.status === 200) {
-      return true;
+      return [true, null];
     }
-  } catch (err) { 
-    console.log(err); 
+  } catch (error) { 
+    return [false, error];
   }
-  return false;
 }
 
 

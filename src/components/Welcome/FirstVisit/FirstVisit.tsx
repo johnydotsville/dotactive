@@ -57,10 +57,23 @@ export const FirstVisit = () => {
 
 
 async function checkToken(token: string): Promise<ActionResult> {
-  const isValid = await checkIfTokenValid(token);
-  return {
-    success: isValid,
-    message: isValid ? "Токен в порядке." : "Введенный токен не работает."
+  const [isValid, error] = await checkIfTokenValid(token);
+
+  if (isValid === true) {
+    return { 
+      success: true, 
+      message: "Токен в порядке" 
+    };
+  }
+
+  let message;
+  if (error.message.includes('timeout')) {
+    message = "Не удалось проверить токен. Истекло время ожидания от сервера.";
+  }
+
+  return { 
+    success: false, 
+    message 
   }
 }
 

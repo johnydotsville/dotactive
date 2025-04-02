@@ -5,6 +5,7 @@
 export const stratzRequestConfig = {
   url: "https://api.stratz.com/graphql",
   method: "post",
+  timeout: 7000,
   headers: {
     "content-type": "application/json",
     "User-Agent": "STRATZ_API"
