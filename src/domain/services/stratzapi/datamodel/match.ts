@@ -8,6 +8,7 @@ export class Match {
   durationSeconds: number;
   lobbyType: string;
   didRadiantWin: boolean;
+  didDireWin: boolean;
   radiantKills: number;
   direKills: number;
   gameMode
@@ -23,6 +24,7 @@ export class Match {
     match.durationSeconds = obj.durationSeconds;
     match.lobbyType = obj.lobbyType;
     match.didRadiantWin = obj.didRadiantWin;
+    match.didDireWin = !obj.didRadiantWin;
     match.gameMode = obj.gameMode;
     match.bracket = obj.bracket;
     match.matchPlayers = obj.players.map(p => MatchPlayer.create(p));

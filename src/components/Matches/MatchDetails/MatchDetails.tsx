@@ -1,3 +1,6 @@
+import { Box, Divider, Typography } from "@mui/material";
+import { Container, Stack } from "@mui/material";
+
 import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useContext } from "react";
@@ -11,20 +14,21 @@ import { MyDatabase } from "@domain/database/MyDatabase";
 import { MatchStorage } from "@domain/database/storage/MatchStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
 import { PlayerSummary } from "./PlayerSummary/PlayerSummary";
+import { Matchup } from "./Matchup/Matchup";
 import { getRadiantTeam, getDireTeam } from "@domain/services/analyze/utils";
 import { getCurrentUser } from "@utils/UserUtils";
 
 
 export const MatchDetails = () => {  
-  const matchSent = useLocation().state;
+  const matchInfo = useLocation().state;
   const database: MyDatabase = useContext(DatabaseContext);
   const { id: matchId } = useParams();
   const [ match, setMatch ] = useState(null);
   const [ loading, setLoading ] = useState(true);
 
   useEffect(() => {
-    if (matchSent) {
-      setMatch(matchSent);
+    if (matchInfo) {
+      setMatch(matchInfo);
       setLoading(false);  // TODO: разобраться получше, как все эти независимые состояния будут работать вместе, как они устанавливаются, как при перерисовке анализируются и т.д.
     } else {
       setLoading(true);
@@ -50,14 +54,16 @@ export const MatchDetails = () => {
   const radiantSummary = radiant.map(p => <PlayerSummary key={p.steamAccountid} player={p} mates={radiant} enemies={dire} isUser={p.steamAccountid === playerAccountId} />);
   const direSummary = dire.map(p => <PlayerSummary key={p.steamAccountid} player={p} mates={dire} enemies={radiant} isUser={p.steamAccountid === playerAccountId} />);
 
+  const matchupbox = (
+    <Stack direction="column" alignItems="center" gap={5}>
+      <Typography variant="body1" sx={{ fontSize: "2.5rem" }}>Состав команд</Typography>
+      <Matchup match={match} />
+    </Stack>
+  ) 
+
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.teamSummaryWrapper}>
-        { radiantSummary }
-      </div>
-      <div className={styles.teamSummaryWrapper}>
-        { direSummary }
-      </div>
-    </div>
+    <Container>
+      { matchupbox }
+    </Container>
   )
 }

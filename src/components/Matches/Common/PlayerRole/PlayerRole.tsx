@@ -1,3 +1,5 @@
+import { Stack } from "@mui/material";
+
 import { useState } from "react";
 
 import * as styles from "./PlayerRole.module.css";
@@ -19,7 +21,8 @@ export const PlayerRole: React.FC<PlayerRoleProps> = ({ heroname, position }) =>
   const defaultSize = "60%";
   switch (position) {
     case "POSITION_1":
-      posImg = <CarryIcon size={defaultSize}/>;
+      // posImg = <CarryIcon size={defaultSize}/>;
+      posImg = <CarryIcon />;
       break;
     case "POSITION_2":
       posImg = <MidIcon size={defaultSize}/>;
@@ -41,9 +44,9 @@ export const PlayerRole: React.FC<PlayerRoleProps> = ({ heroname, position }) =>
   const handleHeroIconLoadingError = () => setHeroIconLoadingError(true);
 
   return (
-    <div className={styles.wrapper}>
+    <Stack direction="row">
       <img className={styles.hero} src={heroimgPath} onError={handleHeroIconLoadingError} loading="lazy" alt={heroname} />
-      <div className={styles.position}>{ posImg }</div>
-    </div>
+      { posImg }
+    </Stack>
   )
 }
