@@ -12,8 +12,7 @@ import { DatabaseContext } from "@components/App/App";
 import { MyDatabase } from "@domain/database/MyDatabase";
 import { MatchStorage } from "@domain/database/storage/MatchStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";
-import { PlayerSummary } from "./PlayerSummary/PlayerSummary";
-import { Matchup } from "./Matchup/Matchup";
+import { Matchup } from "./Matchup";
 import { getRadiantTeam, getDireTeam } from "@domain/services/analyze/utils";
 import { getCurrentUser } from "@utils/UserUtils";
 
@@ -49,9 +48,6 @@ export const MatchDetails = () => {
 
   const radiant = getRadiantTeam(match.matchPlayers);
   const dire = getDireTeam(match.matchPlayers);
-
-  const radiantSummary = radiant.map(p => <PlayerSummary key={p.steamAccountid} player={p} mates={radiant} enemies={dire} isUser={p.steamAccountid === playerAccountId} />);
-  const direSummary = dire.map(p => <PlayerSummary key={p.steamAccountid} player={p} mates={dire} enemies={radiant} isUser={p.steamAccountid === playerAccountId} />);
 
   const matchupbox = (
     <Stack direction="column" alignItems="center" gap={5}>
