@@ -10,6 +10,8 @@ import { StorageName } from '@domain/database/config/storages/StorageName';
 import { MyDatabase } from '@domain/database/MyDatabase';
 import { getCurrentUser } from '@utils/UserUtils';
 
+import { MatchHistory } from './MatchHistory';
+
 
 export default function Matches() {
   const database: MyDatabase = useContext(DatabaseContext);
@@ -32,8 +34,11 @@ export default function Matches() {
   const displayMatches = matches.map(m => <MatchLine key={m.id} match={m} ></MatchLine>);
 
   return (
-    <div>
-      { displayMatches }
-    </div>
+    <MatchHistory />
   )
+  // return (
+  //   <div>
+  //     { displayMatches }
+  //   </div>
+  // )
 }

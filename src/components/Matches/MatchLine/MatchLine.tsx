@@ -13,7 +13,6 @@ import { MiscMatchInfo } from "./MiscMatchInfo/MiscMatchInfo";
 import { LobbyType } from "./LobbyType/LobbyType";
 import { PlayerRole } from "../Common/PlayerRole/PlayerRole";
 import { SuspectMarker } from "./SuspectMarker/SuspectMarker";
-import { icons } from "@utils/Ways";
 import { secondsToHMS } from "@utils/time-utils";
 import { getPlayerPlaceByPerformance } from "@domain/services/analyze/utils";
 import { kdaRatio } from "@domain/services/analyze/utils";

@@ -108,19 +108,37 @@ function PositionHardSupport({ w, h } : { w?: string, h?: string }) {
 function PositionUnknown({ w, h } : { w?: string, h?: string }) {
   return (
     <svg viewBox="0 0 24 24" width={w} height={h}>
-      <circle cx="12" cy="12" r="10" fill="none" stroke="url(#circle_gradient)" strokeWidth="2" />
-      <path d="M8 8 L16 16 M8 16 L16 8" stroke="url(#x_gradient)" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="10" fill="none" stroke="url(#circle_gradient_red)" stroke-width="2" />
+      <path d="M10.5 9.5C10.5 8.4 11.4 7.5 12.5 7.5C13.6 7.5 14.5 8.4 14.5 9.5C14.5 10.3 14 10.9 13.3 11.3C12.6 11.7 12.5 12.3 12.5 13V13.5" stroke="url(#question_gradient_red)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <circle cx="12.5" cy="16.5" r="1" fill="url(#question_gradient_red)"/>
       <defs>
-        <linearGradient id="circle_gradient" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#DDD" />
-          <stop offset="1" stopColor="#838383" />
+        <linearGradient id="circle_gradient_red" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#FFDDDD" />
+          <stop offset="1" stop-color="#FF8383" />
         </linearGradient>
         
-        <linearGradient id="x_gradient" x1="8" y1="8" x2="16" y2="16" gradientUnits="userSpaceOnUse">
-          <stop stopColor="hsl(231, 54%, 59%)" />
-          <stop offset="1" stopColor="hsl(230, 43%, 45%)" />
+        <linearGradient id="question_gradient_red" x1="10" y1="7" x2="15" y2="17" gradientUnits="userSpaceOnUse">
+          <stop stop-color="hsl(0, 80%, 60%)" />
+          <stop offset="1" stop-color="hsl(0, 70%, 45%)" />
         </linearGradient>
       </defs>
     </svg>
   )
+  // return (
+  //   <svg viewBox="0 0 24 24" width={w} height={h}>
+  //     <circle cx="12" cy="12" r="10" fill="none" stroke="url(#circle_gradient_red)" strokeWidth="2" />
+  //     <path d="M8 8 L16 16 M8 16 L16 8" stroke="url(#x_gradient_red)" strokeWidth="2" strokeLinecap="round" />
+  //     <defs>
+  //       <linearGradient id="circle_gradient_red" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
+  //         <stop stopColor="#FFDDDD" />
+  //         <stop offset="1" stopColor="#FF8383" />
+  //       </linearGradient>
+        
+  //       <linearGradient id="x_gradient_red" x1="8" y1="8" x2="16" y2="16" gradientUnits="userSpaceOnUse">
+  //         <stop stopColor="hsl(0, 80%, 60%)" />
+  //         <stop offset="1" stopColor="hsl(0, 70%, 45%)" />
+  //       </linearGradient>
+  //     </defs>
+  //   </svg>
+  // )
 }
