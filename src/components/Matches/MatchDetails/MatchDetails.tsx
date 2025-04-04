@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useMemo } from "react";
 
-import * as styles from "./MatchDetails.module.css"
 import { DatabaseContext } from "@components/App/App";
 import { MyDatabase } from "@domain/database/MyDatabase";
 import { MatchStorage } from "@domain/database/storage/MatchStorage";

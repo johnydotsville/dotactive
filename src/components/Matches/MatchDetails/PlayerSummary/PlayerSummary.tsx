@@ -10,7 +10,7 @@ import { PlayerRole } from "@components/Matches/Common/PlayerRole/PlayerRole";
 import { getPlayerPlaceByPerformance } from "@domain/services/analyze/utils";
 import { kdaRatio } from "@domain/services/analyze/utils";
 import { icons } from "@utils/Ways";
-import { PlayerStat } from "@components/Matches/MatchLine/PlayerStat/PlayerStat";
+// import { PlayerStat } from "@components/Matches/MatchLine/PlayerStat/PlayerMetric";
 
 
 type PlayerSummaryProps = {
@@ -59,19 +59,19 @@ export const PlayerSummary: React.FC<PlayerSummaryProps> = ({ player, mates, ene
         <PlayerRole heroname={player.heroShortName} position={player.position} />
       </div>
       <div className={styles.playerStatWrapper}>
-        <PlayerStat pic={icons.stub} stat={info.kda} altValue={info.kdaString} />
+        {/* <PlayerStat pic={icons.stub} stat={info.kda} altValue={info.kdaString} /> */}
       </div>
       <div className={styles.playerStatWrapper}>
-        <PlayerStat pic={icons.gpm} stat={info.gpm} />
+        {/* <PlayerStat pic={icons.gpm} stat={info.gpm} /> */}
       </div>
       <div className={styles.playerStatWrapper}>
-        <PlayerStat pic={icons.xpm} stat={info.xpm} />
+        {/* <PlayerStat pic={icons.xpm} stat={info.xpm} /> */}
       </div>
       <div className={styles.playerStatWrapper}>
-        <PlayerStat pic={icons.heroDmg} stat={info.heroDmg} />
+        {/* <PlayerStat pic={icons.heroDmg} stat={info.heroDmg} /> */}
       </div>
       <div className={styles.playerStatWrapper}>
-        <PlayerStat pic={icons.towerDmg} stat={info.towerDmg} />
+        {/* <PlayerStat pic={icons.towerDmg} stat={info.towerDmg} /> */}
       </div>
     </div>
   )

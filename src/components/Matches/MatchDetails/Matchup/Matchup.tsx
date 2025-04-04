@@ -1,6 +1,6 @@
 import { getRadiantTeam, getDireTeam } from "@domain/services/analyze/utils";
-import { HeroPortrait } from "@components/Common/HeroPortrait/HeroPortrait";
-import { PlayerPosition } from "@components/Common/PlayerPosition/PlayerPosition";
+import { HeroPortrait } from "@components/Common/HeroPortrait";
+import { PlayerPosition } from "@components/Common/PlayerPosition";
 
 import { Box, Stack, Typography } from "@mui/material";
 import { Match } from "@domain/services/stratzapi/datamodel/Match";

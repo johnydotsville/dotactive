@@ -1,4 +1,5 @@
 import React from "react";
+import Stack from "@mui/material/Stack";
 import classNames from "classnames";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import * as styles from "./MatchLine.module.css";
 
 import { Match } from "@domain/services/stratzapi/datamodel/Match";
-import { PlayerStat } from "./PlayerStat/PlayerStat";
+import { PlayerMetricValue, PlayerMetricIcon, Metrics } from "@components/Common/PlayerMetric";
 import { MiscMatchInfo } from "./MiscMatchInfo/MiscMatchInfo";
 import { LobbyType } from "./LobbyType/LobbyType";
 import { PlayerRole } from "../Common/PlayerRole/PlayerRole";
@@ -62,24 +63,45 @@ export const MatchLine: React.FC<MatchLineProps> = ({ match }) => {
     }, [match.id]
   );
 
-  const wrapperStyles = classNames([styles.wrapper, info.player.isVictory ? styles.win : styles.lose])
 
   const handleMatchLineClick = (matchId: number) => {
     navigate(`/matches/${matchId}`, { state: match });  // TODO: переделать потом, чтобы не хардкодить URL
   }
 
   return (
-    <div className={wrapperStyles} onClick={() => handleMatchLineClick(match.id)}>
+    <Stack 
+      direction="row" 
+      onClick={() => handleMatchLineClick(match.id)} 
+      height="35px"
+      justifyContent="space-between"
+      sx={{ bgcolor: info.player.isVictory ? "#70E154" : "#E37777" }}
+    >
       <SuspectMarker suspPoints={info.suspect} />
       <LobbyType lobbyType={match.lobbyType} />
       <div className={styles.matchDuration}>{info.matchDuration}</div>
       <PlayerRole heroname={info.player.heroShortName} position={info.player.position} />
-      <PlayerStat pic={icons.stub} stat={info.kda} altValue={info.kdaString}/>
-      <PlayerStat pic={icons.gpm} stat={info.gpm} />
-      <PlayerStat pic={icons.xpm} stat={info.xpm} />
-      <PlayerStat pic={icons.heroDmg} stat={info.heroDmg} />
-      <PlayerStat pic={icons.towerDmg} stat={info.towerDmg} />
+      <PlayerMetricBox metric="KDA" value={info.kda} altValue={info.kdaString}/>
+      <PlayerMetricBox metric="GPM" value={info.gpm} />
+      <PlayerMetricBox metric="XPM" value={info.xpm} />
+      <PlayerMetricBox metric="HERODMG" value={info.heroDmg} />
+      <PlayerMetricBox metric="TOWERDMG" value={info.towerDmg} />
       <MiscMatchInfo matchId={match.id} startDateTimeUnix={match.startDateTime} />
-    </div>
+    </Stack>
+  )
+}
+
+
+type PlayerMetricBoxProps = {
+  metric: Metrics,
+  value: [number, number, number]
+  altValue?: string;
+}
+
+function PlayerMetricBox({ metric, value, altValue }: PlayerMetricBoxProps) {
+  return (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      <PlayerMetricIcon metric={metric} w="25px" h="25px" />
+      <PlayerMetricValue value={value} altValue={altValue} />
+    </Stack>
   )
 }

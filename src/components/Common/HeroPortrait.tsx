@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 
 
-export function HeroPortrait({heroname}) {
+export function HeroPortrait({ heroname, w = "100%", h = "100%" }) {
   const [heroIconLoadingError, setHeroIconLoadingError] = useState(false);
 
   const heroimg = heroIconLoadingError ? "stubportrait" : heroname;
@@ -18,7 +18,7 @@ export function HeroPortrait({heroname}) {
       onError={handleHeroIconLoadingError} 
       loading="lazy" 
       alt={heroname}
-      sx={{ display: "block", height: "100%", width: "100%" }}
+      sx={{ display: "block", width: w, height: h }}
     />
   )
 }
