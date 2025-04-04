@@ -7,9 +7,9 @@ import { createContext } from "react";
 
 import { MyDatabase } from '@domain/database/MyDatabase';
 
-import Matches from "@components/Matches/Matches";
 import { Welcome } from '@components/Welcome/Welcome';
 import { MatchDetails } from '@components/Matches/MatchDetails/MatchDetails';
+import { MatchHistory } from '@components/Matches/MatchHistory';
 
 
 export const DatabaseContext = createContext(null);
@@ -23,7 +23,7 @@ export const App: React.FC<Props> = ({ database }) => {
           <Routes>
             <Route path="/" element={<Welcome />}/>
             <Route path="/matches/:id" element={<MatchDetails />} />
-            <Route path="/matches" element={<Matches />} />
+            <Route path="/matches" element={<MatchHistory />} />
           </Routes>
         </BrowserRouter>
       </DatabaseContext.Provider>

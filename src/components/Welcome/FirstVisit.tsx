@@ -1,10 +1,8 @@
-import Container from "@mui/material/Container";
-
 import { useState } from "react";
 
 import { checkIfTokenValid } from "@domain/services/stratzapi/utils";
 import { checkIfSteamAccountIdValid } from "@domain/services/stratzapi/utils";
-import { CheckAndSaveValue } from "../CheckAndSaveValue/CheckAndSaveValue";
+import { CheckAndSaveValue } from "./CheckAndSaveValue";
 
 
 export type ActionResult = {

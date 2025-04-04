@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 
-import { DatabaseContext } from '@components/App/App';
+import { DatabaseContext } from '@components/App';
 import { MatchStorage } from '@domain/database/storage/MatchStorage';
 import { MatchService } from '@domain/services/matches/MatchService';
 import { StorageName } from '@domain/database/config/storages/StorageName';

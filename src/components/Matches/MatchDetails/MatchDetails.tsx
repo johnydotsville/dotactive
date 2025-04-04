@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useMemo } from "react";
 
-import { DatabaseContext } from "@components/App/App";
+import { DatabaseContext } from "@components/App";
 import { MyDatabase } from "@domain/database/MyDatabase";
 import { MatchStorage } from "@domain/database/storage/MatchStorage";
 import { StorageName } from "@domain/database/config/storages/StorageName";

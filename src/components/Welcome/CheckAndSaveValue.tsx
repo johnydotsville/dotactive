@@ -9,7 +9,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { useState } from "react";
 
-import { ActionResult } from "../FirstVisit/FirstVisit";
+import { ActionResult } from './FirstVisit';
 
 
 // type CheckAndSaveValueProps = {

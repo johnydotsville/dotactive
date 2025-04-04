@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
 
 
-import * as styles from "./Welcome.module.css";
-import { FirstVisit } from "./FirstVisit/FirstVisit";
+import { FirstVisit } from "./FirstVisit";
 
 
 
