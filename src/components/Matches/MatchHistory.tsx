@@ -74,6 +74,7 @@ export function MatchHistory() {
     return {
       matchId: m.id,
       suspect: <SuspectMarker suspPoints={suspect} />,
+      isVictory: player.isVictory,
       lobbyType: <LobbyType lobbyType={m.lobbyType} />,
       matchDuration: <Typography>{matchDuration}</Typography>,
       hero: <HeroPortrait heroname={player.heroShortName} w="80px" />,
@@ -99,6 +100,7 @@ export function MatchHistory() {
             <TableRow 
               key={r.matchId}
               onClick={() => r.gotoMatchDetails(r.matchId)}
+              sx={{ bgcolor: r.isVictory ? "#70E154" : "#E37777" }}
             >
               <TableCell>{ r.suspect }</TableCell>
               <TableCell>{ r.lobbyType }</TableCell>
